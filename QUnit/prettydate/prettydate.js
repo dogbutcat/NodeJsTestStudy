@@ -11,7 +11,7 @@ function prettyDate(now, time) {
 
     return day_diff == 0 && (
         diff < 60 && "just now" ||
-        diff < 120 && "1 minute age" ||
+        diff < 120 && "1 minute ago" ||
         diff < 3600 && Math.floor(diff / 60) +
         " minutes ago" ||
         diff < 7200 && "1 hours ago" ||
