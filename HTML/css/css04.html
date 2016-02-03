@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>This is css Study file</title>
+    <style>
+        @charset "utf-8";
+        * {
+            margin: 0;
+            padding: 0;
+            border: 1px none transparent;
+        }
+
+        p {
+            color: green;
+        }
+
+        #p2 {
+            color: red;
+        }
+
+        /*        p.mark {
+                    background-color: yellow;
+                    border:1px solid purple;
+                }*/
+        div span { /*父子选择器*/
+            background-color: yellow;
+            border: 1px solid purple;
+        }
+
+        a:link {
+            color: #004276;
+            text-decoration: none;
+        }
+
+        a:visited {
+            color: transparent;
+
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        a:active {
+            color: transparent;
+        }
+
+        span:hover {
+            border: 1px none transparent;
+        }
+        .product{background-color:black;}
+    </style>
+</head>
+<body>
+<h2>No.2 Title</h2>
+<p>one Paragraph</p>
+<p id="p2">two Paragraph</p>
+<p class="mark">three Paragraph</p>
+<span class="mark product">This is inline Element</span>
+<hr>
+<div>four Paragraph
+    <span>two inline Element</span>
+    <p>div in p<span>three inline Element</span></p>
+    <p>div in p<span>three inline Element</span></p>
+    <b>b in div<i><span>inline Element in i and b</span></i></b>
+</div>
+<a href="http://baidu.com">baidu.com</a>
+</body>
+</html>
