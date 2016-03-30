@@ -42,4 +42,11 @@ for (i=0;i<filenames.length;i++){
         }
     });
 }
+
+var http = require('http');
+var circle = require('./NodeJsTestModule/circle.js')
+http.createServer(function (req, res) {
+    res.writeHead(200,{'Content-type':'text/plain'});
+    res.end(circle.area(4).toString());
+}).listen(1189,"127.0.0.1");
 */

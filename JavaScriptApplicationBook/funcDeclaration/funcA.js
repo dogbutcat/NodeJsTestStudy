@@ -25,7 +25,7 @@ TestCase("function Expressions. ", {
     "test function scope": function () {
         var a = function x() {
             console.log('a');
-            assertEquals("x is usable inside the function!", "a", x);
+            assertEquals("x is usable inside the function!", x, x);
         };
 
         a();

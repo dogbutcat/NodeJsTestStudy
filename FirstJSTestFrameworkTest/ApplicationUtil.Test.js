@@ -29,7 +29,7 @@ ApplicationUtilTest.prototype.testValidateLoginFormWithEmptyUserName = function 
     assertEquals("Username is not validated correctly!",
         "This field is required",document.getElementById("usernameMessage").innerText);
     assertEquals("Password is not validated correctly!",
-    "",document.getElementById("passwordMessage").innerText);
+        "",document.getElementById("passwordMessage").innerText);
 };
 
 ApplicationUtilTest.prototype.testValidateLoginFormWithEmptyPassword = function () {

@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>This is for test Sibling Attr</title>
+</head>
+<body>
+<div id="div-01">Here is div-01</div>
+<div id="div-02">Here is div-02</div>
+<script type="text/javascript">
+    var el = document.getElementById('div-01').nextSibling,
+            i=1;
+    console.log('Siblings of div-01');
+
+    while (el){
+        console.log(i+'. '+el.nodeName+' '+el.innerText);
+        el = el.nextSibling;
+        i++;
+    }
+
+    console.log(window);
+/*    $.ajax({
+        type:"post",
+        url:"url",
+        data:"{'para1':'"+para1+"','para2':'"+para2+"'}",
+        contentType:"application/json;charset=utf-8",
+        dataType:"json",
+        success:function(data){
+
+        },
+        error: function (err) {
+
+        }
+    })*/
+</script>
+</body>
+</html>
