@@ -61,3 +61,7 @@ var result = f1();
 result();
 nAdd();
 result();
+
+var a = function(){
+    console.log(navigator);
+}
