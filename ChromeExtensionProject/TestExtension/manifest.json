@@ -1,0 +1,35 @@
+{
+  "manifest_version":2,
+
+  "name":"Getting started example",
+  "description":"This extension shows a Google Image search result for the current page",
+  "version":"1.0",
+
+  "browser_action":{
+    "default_icon":"icon.png",
+//    "default_popup":"popup.html", // Popup
+    "default_title":"Image Search" // Tooltip
+  },
+  "permissions":[
+    "activeTab",
+    "storage",
+    "https://ajax.googleapis.com/",
+    "http://*/*",
+    "background",
+    "notifications"
+  ],
+
+  "options_page":"options.html",
+
+  "background":{
+    "scripts":["background.js"]
+  },
+
+  "content_scripts":[{
+    "js":["contentscript.js"],
+    "matches":["http://*/*"]
+  },{
+    "js":["findDouyuChat.js"],
+    "matches":["http://www.douyu.com/*","http://www.douyutv.com/*"]
+  }]
+}

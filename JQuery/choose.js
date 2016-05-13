@@ -1,7 +1,7 @@
 /**
  * Created by oliver on 3/31/16.
  */
-/*
+/**/
 function bindAll(){
     $("div.r1").click(function (r) {
         clicker = this;
@@ -17,4 +17,4 @@ function bindAll(){
             r.err?(alert(r.err),"Already Gone!" == r.err && $(clicker).css("background-color","gray")):window.location.href="/usercenter/invoice"
         },"json")
     })
-}*/
+}

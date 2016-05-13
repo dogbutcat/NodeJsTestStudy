@@ -58,7 +58,7 @@ function download(url,savefile,callback){
     req.end();
 }
 
-var url = 'http://shark.douyucdn.cn/app/douyu/js/page/room/normal/app-all.js?nv=7.20',
+var url = 'http://shark.douyucdn.cn/app/douyu/js/page/room/normal/app-all.js?nv=7.61',
     savefile = function () {
         return (url.match(/[^\/][\w-]+\.js/ig).toString());
         //console.log(url.match(/[\w\.-]*[^?/]/g));

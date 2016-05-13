@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SetBlockWords</title>
+    <style type="text/css">
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            width: 330px;
+        }
+
+        .words {
+            width: 100%;
+            /*height: 100px;*/
+        }
+
+        .words_input{
+            width: 92%;
+            height: 35px;
+            padding: 0;
+            font-size: 15pt;
+            padding-right: 10px;
+        }
+
+        .words_label{
+            font-size: 20px;
+        }
+
+        #btnSave {
+            font-size: 15px;
+            margin: 6px 0 0 180px;
+            width: 100px;
+            border-left-width: 10px;
+            padding: 0 10px 0 0;
+        }
+        #status {
+            font-size: 20px;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div class="words">
+        <label for="words" class="words words_label">Block Words: </label>
+        <input type="text" name="saveBtn" id="words" class="words words_input">
+        <div class="status">
+            <span id="status">Operation Complete!</span>
+            <button id="btnSave">Save</button>
+        </div>
+    </div>
+
+</div>
+</body>
+<script  src="ext/common.js"></script>
+<script src="popup.js"></script>
+</html>
