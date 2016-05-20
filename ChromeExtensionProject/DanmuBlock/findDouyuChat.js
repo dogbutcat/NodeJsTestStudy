@@ -7,7 +7,7 @@ var observer_clist = new MutationObserver(function (mutations) {
     childList: true
     // attributes: true,
     // characterData:true
-}, target, targetList = ['.c-list', '#chat_line_list'], blockConfig;
+}, target, targetList = ['.c-list', '#chat_line_list'], blockConfig={};
 
 /**
  * Get storage Initalize
@@ -16,9 +16,13 @@ var observer_clist = new MutationObserver(function (mutations) {
     chrome.runtime.sendMessage({type: 'getData'}, function (response) {
         // console.log(response);
         blockConfig = JSON.parse(response);
-        console.log(blockConfig);
+        // console.log(blockConfig);
     })
 }();
+
+// while (typeof blockConfig.level == 'undefined'){
+//     init();
+// }
 
 /**
  * Check if Chat list is .c-list or #chat_line_list
@@ -74,6 +78,11 @@ formatedNode.prototype = {
     },
     isGetPresent: function () {
         return this.tempNode && this.tempNode.querySelector('img.cj-img') != null ? true : false
+    },
+    userLevel: function (lvl) {
+        var userNode = (this.tempNode && this.tempNode.querySelector('a.user-level').querySelector('img').getAttribute('title')), result;
+        (result = userNode.match(/\d+/g))&& (result = parseInt(result[0]));
+        return result < parseInt(lvl);
     }
 };
 
@@ -93,12 +102,19 @@ function operateMutation(mutation) {
                 return true;
             }
 
+            if(singleNode.userLevel(blockConfig.level)){
+                singleNode.removeNode();
+                return true;
+            }
+
             (textContent = setObserverTarget(chatList, singleNode)) && (textContent = textContent.innerText);
 
             if (checkWords(textContent)) {
                 singleNode.removeNode();
                 return true;
             }
+        } else if (singleNode.hasPresentImg()) {
+            singleNode.removeNode();
         }
     }
 }
@@ -112,7 +128,7 @@ function checkWords(text) {
     if (text != null) {
         var matchReg;
         matchReg = text.match(/(.{2,})\1{1,}|(.)\2{3,}/ig); // single word Repeat for trible time or two word repeat one times to Block the chat
-        if (text.length > 10 || matchReg != null) {
+        if (text.length > 12 || matchReg != null) {
             return true;
         } else if (blockConfig.blockWords != "") {
             var regpiece = new RegExp(blockConfig.blockWords, 'ig');
@@ -130,6 +146,15 @@ function checkWords(text) {
 /**
  * Temporary for storage Change Event cuz content_script blockConfig dont like storage file
  */
-chrome.storage.onChanged.addListener(function (a, b) {
-    blockConfig.blockWords = a.words.newValue;
+chrome.storage.onChanged.addListener(function (a, b) { // a is submitted the changed one
+    for (var key in a) {
+        switch (key) {
+            case "words":
+                blockWords = a.words.newValue;
+                break;
+            case "level":
+                blockConfig.level = a.level.newValue;
+                break;
+        }
+    }
 });

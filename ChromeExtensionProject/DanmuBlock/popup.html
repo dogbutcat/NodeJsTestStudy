@@ -16,7 +16,7 @@
             /*height: 100px;*/
         }
 
-        .words_input{
+        .words_input {
             width: 92%;
             height: 35px;
             padding: 0;
@@ -24,7 +24,7 @@
             padding-right: 10px;
         }
 
-        .words_label{
+        .words_label {
             font-size: 20px;
         }
 
@@ -35,25 +35,33 @@
             border-left-width: 10px;
             padding: 0 10px 0 0;
         }
+
         #status {
             font-size: 20px;
             position: absolute;
         }
     </style>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
-<div>
-    <div class="words">
-        <label for="words" class="words words_label">Block Words: </label>
-        <input type="text" name="saveBtn" id="words" class="words words_input">
-        <div class="status">
+<div class="words container well">
+    <div class="row">
+        <div class="col-xs-6">
+            <label for="words" class="words words_label">Block Words: </label>
+            <input type="text" name="saveBtn" id="words" class="words words_input" placeholder="Please split by '/'">
+        </div>
+        <div class="col-xs-6">
+            <label for="usrLevel" class="words words_label">UserLevelSet: </label>
+            <input type="text" id="usrLevel" class="words words_input">
+        </div>
+        <div class="col-xs-12 status">
             <span id="status">Operation Complete!</span>
-            <button id="btnSave">Save</button>
+            <button class="btn btn-default" id="btnSave">Save</button>
         </div>
     </div>
-
 </div>
+
 </body>
-<script  src="ext/common.js"></script>
+<script src="ext/common.js"></script>
 <script src="popup.js"></script>
 </html>

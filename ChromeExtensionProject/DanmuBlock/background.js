@@ -3,9 +3,9 @@
  */
 
 danMuBlocker.onMessage.addListener(function (message, sender, sendResponse) {
-    var messageType = danMuBlocker.messageType,retVal;
-    for (var key in messageType){
-        if (message.type === key){
+    var messageType = danMuBlocker.messageType, retVal;
+    for (var key in messageType) {
+        if (message.type === key) {
             retVal = messageType[key].call();
             sendResponse(JSON.stringify(retVal));
         }
@@ -13,7 +13,7 @@ danMuBlocker.onMessage.addListener(function (message, sender, sendResponse) {
 });
 
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-    return danMuBlocker.onMessage._dispatch(msg,sender,sendResponse).indexOf(true)!=-1;
+    return danMuBlocker.onMessage._dispatch(msg, sender, sendResponse).indexOf(true) != -1;
 });
 
 // chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {

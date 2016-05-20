@@ -1274,8 +1274,8 @@ var CryptoJS = CryptoJS || function (a, b) {
                         throw Error("code length overflow. (" + e.getLengthInBits() + ">" + 8 * a + ")");
                     for (e.getLengthInBits() + 4 <= 8 * a && e.put(0, 4); 0 != e.getLengthInBits() % 8;)
                         e.putBit(!1);
-                    for (; !(e.getLengthInBits() >= 8 * a || (e.put(d.PAD0, 8),
-                    e.getLengthInBits() >= 8 * a));)
+                    for (; !(e.getLengthInBits() >= 8 * a) && (e.put(d.PAD0, 8),
+                        !(e.getLengthInBits() >= 8 * a));)
                         e.put(d.PAD1, 8);
                     return d.createBytes(e, b)
                 }
@@ -2875,8 +2875,8 @@ ZeroClipboard.Client.prototype = {
             obj && (VARS.source[key.toLowerCase()] = obj)
         }
         define("douyu/context", ["shark/util/cookie/1.0"], function (a) {
-            location.host,
-                a.config("keypre", get("sys.cookie_pre") || "");
+            location.host;
+            a.config("keypre", get("sys.cookie_pre") || "");
             var b = {
                 set: set,
                 get: get
@@ -2902,7 +2902,7 @@ ZeroClipboard.Client.prototype = {
         }
     }),
     shark.on("createNode", function (a, b) {
-        var c, d = shark.helper.file, e = "1.7";
+        var c, d = shark.helper.file, e = "1.8";
         c = b.url,
             d.isCss(c) ? c.indexOf("?") > 0 ? a.href = c + "&" + e : a.href = c + "?" + e : c.indexOf("?") > 0 ? a.src = c + "&" + e : a.src = c + "?" + e
     }),
@@ -3982,18 +3982,16 @@ ZeroClipboard.Client.prototype = {
                     reg: "reg"
                 }
             },
-            client_id: 1,
+            client_id: window.client_id || 1,
             hmac_flash_ready: !1,
             salt: null
         }
             , j = {}
-            , k = {}
-            , l = document.domain;
-        -1 != l.indexOf("douyutv.com") && (i.client_id = 2),
-            j.init = function () {
-                j.view.init(),
-                    j.control.init()
-            }
+            , k = {};
+        j.init = function () {
+            j.view.init(),
+                j.control.init()
+        }
             ,
             j.view = {
                 init: function () {
@@ -4137,7 +4135,7 @@ ZeroClipboard.Client.prototype = {
                             return (e = j.validate.check(this)) ? void (f[this.name] = this.value) : !1
                         }),
                             e)) {
-                        var g = m.val();
+                        var g = l.val();
                         g && (f.ditchName = g),
                             j.validate.ckRegNicknameAsync(d.get(0), function (c) {
                                 c && (a.data("submit", !0),
@@ -4499,7 +4497,7 @@ ZeroClipboard.Client.prototype = {
                 }
             }
         ;
-        var m = {
+        var l = {
             check: function () {
                 var a = c.get("ditchName");
                 if (!a && location.search)
@@ -4515,7 +4513,7 @@ ZeroClipboard.Client.prototype = {
                 return c.get("ditchName")
             }
         }
-            , n = {
+            , m = {
             init: function (b) {
                 b = b || {},
                 a.isFunction(b.onAuto) && (j.control._on_auto_login = b.onAuto),
@@ -4534,8 +4532,8 @@ ZeroClipboard.Client.prototype = {
         }
             ,
             a(j.control._load_hmac),
-            a(m.check),
-            n
+            a(l.check),
+            m
     }),
     define("douyu/com/vcode9", ["jquery", "shark/class", "shark/util/lang/1.0", "shark/util/template/1.0", "shark/ui/dragdrop/1.0", "douyu/context", "douyu/com/sign"], function (a, b, c, d, e, f, g) {
         var h = {
@@ -4988,18 +4986,19 @@ ZeroClipboard.Client.prototype = {
             },
             _decodeFlashText: function (a) {
                 var b, d, e, f, g = "ad_list@=";
-                return !a || a.indexOf(g) < 0 ? void 0 : (b = a.replace(g, "").replace(/@AAS/g, "/").split("@S"),
-                    e = [],
-                    c.each(b, function (a) {
-                        a.indexOf("@AS") >= 0 && (d = a.split("@AS"),
-                            f = {},
-                            c.each(d, function (a) {
-                                a = a.split("@AA="),
-                                a[0] && (f[a[0]] = a[1])
-                            }),
-                            e.push(f))
-                    }),
-                    e)
+                if (a && !(a.indexOf(g) < 0))
+                    return b = a.replace(g, "").replace(/@AAS/g, "/").split("@S"),
+                        e = [],
+                        c.each(b, function (a) {
+                            a.indexOf("@AS") >= 0 && (d = a.split("@AS"),
+                                f = {},
+                                c.each(d, function (a) {
+                                    a = a.split("@AA="),
+                                    a[0] && (f[a[0]] = a[1])
+                                }),
+                                e.push(f))
+                        }),
+                        e
             },
             getAjaxPosListData: function (b) {
                 var c = this
@@ -5083,7 +5082,9 @@ ZeroClipboard.Client.prototype = {
                     window.console && console.error(k)
                 }
                 1 === i.sign.render_count ? (i.sign.render_count = 0,
-                    p.completeCallback()) : i.sign.render_count++
+                    p.completeCallback()) : i.sign.render_count++,
+                m.length || (i.sign.render_count = 0,
+                    p.completeCallback())
             },
             clean: function () {
                 var b, c, d, e, f, g = p.clean.ways, h = g["default"], j = a("[" + i.sign.dom_prop + "]");
@@ -5616,7 +5617,7 @@ ZeroClipboard.Client.prototype = {
                 id: "room_flash_proxy"
             }
         }
-            , e = ["room_dycookie_set", "room_dycookie_get", "room_login_show", "room_bus_login", "room_bus_login2", "room_bus_phobi", "room_bus_phock", "room_bus_pagescr", "room_bus_showwatchtip", "room_bus_showwatchtipdown", "room_data_sererr", "room_data_flaerr", "room_data_chat", "room_data_chat2", "room_data_schat", "room_data_sys", "room_data_brocast", "room_data_cqrank", "room_data_cqrankupdate", "room_data_olyw", "room_data_info", "room_data_login", "room_data_userc", "room_data_setadm", "room_data_gift", "room_data_buycq", "room_data_tasklis", "room_data_taskcou", "room_data_taskrec", "room_data_chest", "room_data_onekeyacc", "room_data_chatinit", "room_data_chatrep", "room_data_ycchange", "room_data_state", "room_data_nstip", "room_data_nstip2", "room_data_illchange", "room_data_getdid", "room_data_giftbat1", "room_data_ancpoints", "room_data_reg", "room_data_ulgrow", "room_data_ulico", "room_data_rankgap", "room_data_expchange", "room_data_beastrec", "room_data_beastrep", "room_data_petrec", "room_data_buytickets", "room_data_chargelive", "room_data_endchargelive", "room_bus_comcall", "room_data_admfail", "room_data_chatpri", "room_data_per", "room_data_giftbat2", "room_data_balance", "room_data_tasksign", "room_data_chestquery", "room_data_chatcd", "room_data_luckdrawcd"]
+            , e = ["room_dycookie_set", "room_dycookie_get", "room_login_show", "room_bus_login", "room_bus_login2", "room_bus_phobi", "room_bus_phock", "room_bus_pagescr", "room_bus_showwatchtip", "room_bus_showwatchtipdown", "room_data_sererr", "room_data_flaerr", "room_data_chat", "room_data_chat2", "room_data_schat", "room_data_sys", "room_data_brocast", "room_data_cqrank", "room_data_cqrankupdate", "room_data_olyw", "room_data_info", "room_data_login", "room_data_userc", "room_data_setadm", "room_data_gift", "room_data_buycq", "room_data_tasklis", "room_data_taskcou", "room_data_taskrec", "room_data_chest", "room_data_onekeyacc", "room_data_chatinit", "room_data_chatrep", "room_data_ycchange", "room_data_state", "room_data_nstip", "room_data_nstip2", "room_data_illchange", "room_data_getdid", "room_data_giftbat1", "room_data_ancpoints", "room_data_reg", "room_data_ulgrow", "room_data_ulico", "room_data_rankgap", "room_data_expchange", "room_data_beastrec", "room_data_beastrep", "room_data_petrec", "room_data_buytickets", "room_data_chargelive", "room_data_endchargelive", "room_data_sabonus", "room_data_sabonusget", "room_bus_comcall", "room_data_admfail", "room_data_chatpri", "room_data_per", "room_data_giftbat2", "room_data_balance", "room_data_tasksign", "room_data_chestquery", "room_data_chatcd", "room_data_luckdrawcd"]
             , f = ["js_newuser_client", "js_userlogin", "js_verReque", "js_anotherlogin", "js_sendmsg", "js_blackuser", "js_userlogout", "js_setadmin", "js_sendsize", "js_barrage", "js_myblacklist", "adverment", "js_givePresent", "js_giveGift", "js_queryTask", "js_newQueryTask", "js_obtainTask", "js_roomSignUp", "js_keyTitles", "js_reportBarrage", "js_exitFullScreen", "js_rewardList", "js_pmFeedback", "js_query_giftPkg", "js_switchStream", "js_superDanmuClick", "js_GetHongbao", "js_effectVisible", "js_breakRuleTip", "js_timeLoginTip", "js_sendhandler"]
             , g = {
             fnIn: function (a, b) {
@@ -6336,7 +6337,8 @@ ZeroClipboard.Client.prototype = {
                     })
             }),
             i.reg("room_data_info", function (a) {
-                b.trigger("mod.chat.gift.call", a),
+                b.trigger("mod.chat.bonus.call", a),
+                    b.trigger("mod.chat.gift.call", a),
                     b.trigger("mod.login.userinfo", a)
             }),
             i.reg("room_data_sererr", function (b) {
@@ -6498,7 +6500,7 @@ ZeroClipboard.Client.prototype = {
                             var c = b.room_info;
                             g.get("room.show_status"),
                             g.get("sys.uid") == g.get("room.owner_uid"),
-                                !a(".live-group-buttons .btn-pushflow").hasClass("hide"),
+                                !a(".live-group-buttons .btn-pushflow").hasClass("hide");
                             void 0 !== c.unixtime && k.contSerLocTime(c.unixtime)
                         }
                         ,
@@ -6734,18 +6736,28 @@ ZeroClipboard.Client.prototype = {
                             })
                     }),
                     -1 != this.userRole.indexOf(2)) {
-                    var d = a(".js_remind_fans").length > 0
-                        , e = 1 === $ROOM.show_status;
-                    c.btnLiveswitch.removeClass("hide"),
-                        c.btnExtcode.removeClass("hide"),
-                        c.btnBroadcast.removeClass("hide"),
-                        c.curVideo.append(this.showSignRemindDialogTpl()),
-                        this.doms.broadcast = a(".live-broadcast"),
-                        this.doms.sendshadow = a(".sendshadow"),
-                    d && e && this.return_showSignRemind({
-                        notMoreRemindTime: 60,
-                        startTime: 7,
-                        endTime: 24
+                    var b = this;
+                    this.getAnchorInfo(function (d) {
+                        var e = d.broadcast
+                            , f = e.isShow;
+                        b.isSent = e.isSent;
+                        var g = b.isSent ? "已发送" : "发送";
+                        c.sendAnchor.text(g);
+                        var h = 1 == d.show_status
+                            , i = h ? "b-on" : "b-off";
+                        c.liveBtn.addClass(i),
+                            c.btnLiveswitch.removeClass("hide"),
+                            c.btnExtcode.removeClass("hide"),
+                            c.curVideo.append(b.showSignRemindDialogTpl()),
+                            b.doms.broadcast = a(".live-broadcast"),
+                            b.doms.sendshadow = a(".sendshadow"),
+                        b.isSent && c.sendAnchor.addClass("r_sendon"),
+                        f && c.btnBroadcast.removeClass("hide"),
+                        !b.isSent && h && f && b.return_showSignRemind({
+                            notMoreRemindTime: 60,
+                            startTime: 7,
+                            endTime: 24
+                        })
                     })
                 }
                 this.isStartLive && -1 != this.userRole.indexOf(2) && (c.btnPushflow.removeClass("hide"),
@@ -6756,6 +6768,16 @@ ZeroClipboard.Client.prototype = {
                         role: b.userRole
                     }),
                 -1 != this.userRole.indexOf(2) && this.isStartLive && this.livePassShowTpl()
+            },
+            getAnchorInfo: function (b) {
+                a.ajax({
+                    url: "/room/my/getAnchorMenu",
+                    dataType: "json",
+                    type: "GET",
+                    success: function (a) {
+                        b && b(a)
+                    }
+                })
             },
             livePassShowTpl: function () {
                 var b = this;
@@ -6829,30 +6851,34 @@ ZeroClipboard.Client.prototype = {
                     })
             },
             sendPassAjax: function (b) {
-                i.submit({
-                    point_id: i.point.page(13)
-                });
                 var c = this;
-                c.loading.show(),
-                    a.ajax({
-                        type: "POST",
-                        url: "/room/my/setPlayerPassword",
-                        data: {
-                            password: b.con
-                        },
-                        dataType: "json",
-                        success: function (d) {
-                            c.loading.close(),
-                                0 == d.error ? (a.dialog.tips_black(d.msg.msg),
-                                    c.ajax.password = b.con,
-                                    c.setState(d.msg.status)) : a.dialog.alert("设置错误:<span style='color: red'>" + d.msg + "</span>")
-                        }
-                    })
+                this.getCSRFCookie(f, function (d) {
+                    i.submit({
+                        point_id: i.point.page(13)
+                    });
+                    var e = {
+                        password: b.con
+                    };
+                    e[d.name] = d.val,
+                        c.loading.show(),
+                        a.ajax({
+                            type: "POST",
+                            url: "/room/my/setPlayerPassword",
+                            data: e,
+                            dataType: "json",
+                            success: function (d) {
+                                c.loading.close(),
+                                    0 == d.error ? (a.dialog.tips_black(d.msg.msg),
+                                        c.ajax.password = b.con,
+                                        c.setState(d.msg.status)) : a.dialog.alert("设置错误:<span style='color: red'>" + d.msg + "</span>")
+                            }
+                        })
+                })
             },
             getSuperMenu: function (b) {
                 var c = this.doms;
                 a.ajax({
-                    url: "/room/my_admin/getShow",
+                    url: "/room/superMenuOperate/getShow",
                     type: "GET",
                     data: {
                         room_id: $ROOM.room_id,
@@ -6889,7 +6915,7 @@ ZeroClipboard.Client.prototype = {
                         var b = a || window.event;
                         b.stopPropagation(),
                             b.preventDefault(),
-                            c.sendAnchorMsg()
+                        c.isSent || c.sendAnchorMsg()
                     }),
                     e.on("mod.menu.showLiveCodeTemplateAndInit", function (a) {
                         c.liveCodeShow()
@@ -6943,38 +6969,46 @@ ZeroClipboard.Client.prototype = {
             },
             sendAnchorMsg: function (b, c) {
                 var d = this;
-                a.ajax({
-                    type: "POST",
-                    url: "/room/my/remind",
-                    dataType: "json",
-                    success: function (b) {
-                        if (0 == b.error) {
-                            a.dialog.tips_black("开播提醒发送成功"),
-                                a("#js_remind_start").removeClass("r_send").addClass("r_sendon").html("已发送");
-                            var c = new Date
-                                , e = c.getFullYear()
-                                , f = c.getMonth() + 1
-                                , g = c.getDate();
-                            return d.currentDaySetSignRemind = {
-                                roomid: $ROOM.owner_uid,
-                                year: e,
-                                month: f,
-                                day: g
+                this.getCSRFCookie(f, function (b) {
+                    var c = {};
+                    c[b.name] = b.val,
+                        a.ajax({
+                            type: "POST",
+                            url: "/room/my/remind",
+                            dataType: "json",
+                            data: c,
+                            success: function (b) {
+                                if (0 == b.error) {
+                                    a.dialog.tips_black("开播提醒发送成功"),
+                                        a("#js_remind_start").removeClass("r_send").addClass("r_sendon").html("已发送");
+                                    var c = new Date
+                                        , e = c.getFullYear()
+                                        , f = c.getMonth() + 1
+                                        , g = c.getDate();
+                                    return d.currentDaySetSignRemind = {
+                                        roomid: $ROOM.owner_uid,
+                                        year: e,
+                                        month: f,
+                                        day: g
+                                    },
+                                        void (window.location.href = "/" + $ROOM.room_id + "?_r=" + Math.random(1))
+                                }
+                                return void a.dialog.tips_black(b.msg)
                             },
-                                void (window.location.href = "/" + $ROOM.room_id + "?_r=" + Math.random(1))
-                        }
-                        return void a.dialog.tips_black(b.msg)
-                    },
-                    error: function () {
-                        a.dialog.tips_black("请求失败，请稍后重试")
-                    }
+                            error: function () {
+                                a.dialog.tips_black("请求失败，请稍后重试")
+                            }
+                        })
                 })
             },
             showSignRemindDialogTpl: function () {
+                var a = '<div class="live-broadcast js_remind_fans"><div class="close lead-close"></div><p><a href="#" class="r-btn send">发送</a><a href="#" class="r-btn-no nomoreRemind">不再提示</a>   </p> </div>';
+                return a
+            },
+            showSignRemindDialogShadowTpl: function () {
                 var a = this.doms.curVideo
-                    , b = '<div class="sendshadow" style="width : ' + a.width() + "px;height:" + a.height() + 'px"></div>'
-                    , c = '<div class="live-broadcast js_remind_fans"><div class="close lead-close"></div><p><a href="#" class="r-btn send">发送</a><a href="#" class="r-btn-no nomoreRemind">不再提示</a>   </p> </div>';
-                return c + b
+                    , b = '<div class="sendshadow" style="width : ' + a.width() + "px;height:" + a.height() + 'px"></div>';
+                return b
             },
             showSignRemindDialog: function (b) {
                 var c = this
@@ -7014,20 +7048,25 @@ ZeroClipboard.Client.prototype = {
                     };
                     f.set("notWarnTimeObj", JSON.stringify(g), 5184e3)
                 } else if (1 == c)
-                    a.ajax({
-                        type: "POST",
-                        url: "/room/my/remind",
-                        dataType: "json",
-                        success: function (b) {
-                            return 0 == b.error ? (a.dialog.tips_black("开播提醒发送成功"),
-                                a("#js_remind_start").removeClass("r_send").addClass("r_sendon").html("已发送"),
-                                d.doms.broadcast.show(),
-                                d.doms.sendshadow.show(),
-                                void (window.location.href = "/" + $ROOM.room_id + "?_r=" + Math.random(1))) : void a.dialog.tips_black(b.msg)
-                        },
-                        error: function () {
-                            a.dialog.tips_black("请求失败，请稍后重试")
-                        }
+                    d.getCSRFCookie(f, function (b) {
+                        var c = {};
+                        c[b.name] = b.val,
+                            a.ajax({
+                                type: "POST",
+                                url: "/room/my/remind",
+                                dataType: "json",
+                                data: c,
+                                success: function (b) {
+                                    return 0 == b.error ? (a.dialog.tips_black("开播提醒发送成功"),
+                                        a("#js_remind_start").removeClass("r_send").addClass("r_sendon").html("已发送"),
+                                        d.doms.broadcast.show(),
+                                        d.doms.sendshadow.show(),
+                                        void (window.location.href = "/" + $ROOM.room_id + "?_r=" + Math.random(1))) : void a.dialog.tips_black(b.msg)
+                                },
+                                error: function () {
+                                    a.dialog.tips_black("请求失败，请稍后重试")
+                                }
+                            })
                     });
                 else if (0 == c)
                     return
@@ -7132,16 +7171,20 @@ ZeroClipboard.Client.prototype = {
                     icon: "question",
                     okVal: "确定",
                     ok: function () {
-                        a.ajax({
-                            url: "/room/my/close_show",
-                            type: "POST",
-                            dataType: "json",
-                            data: {
+                        c.getCSRFCookie(f, function (b) {
+                            var d = {
                                 ajax: 1
-                            },
-                            success: function (a) {
-                                a.error - 0 === 0 ? c.close_live_room() : alert(a.msg)
-                            }
+                            };
+                            d[b.name] = b.val,
+                                a.ajax({
+                                    url: "/room/my/close_show",
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: d,
+                                    success: function (a) {
+                                        a.error - 0 === 0 ? c.close_live_room() : alert(a.msg)
+                                    }
+                                })
                         })
                     },
                     cancelVal: "取消",
@@ -7165,29 +7208,57 @@ ZeroClipboard.Client.prototype = {
                 return 1 == c.data("doing") ? !1 : (c.data("doing", 1),
                     b.loading.lock = !0,
                     b.loading.show("正在提交，请勿刷新页面……"),
-                    void a.getJSON("/room/my/first_show", function (d) {
-                        b.loading.close(),
-                            c.data("doing", 0);
-                        var e = "warning";
-                        if (0 == d.error)
-                            c.addClass("switch_on"),
-                                e = "succeed";
-                        else {
-                            if (3 == d.error)
-                                return void a.dialog.alert("异常关闭<br />原因：<b>" + d.msg.reason + "</b><br />剩余限时：<span style='color: red'>" + d.msg.open_time + "</span>");
-                            e = "warning"
-                        }
-                        a.dialog({
-                            icon: e,
-                            content: d.msg,
-                            lock: !0,
-                            okVal: "确定",
-                            ok: function () {
-                                return "succeed" == e ? window.location.href = "/" + $ROOM.room_id + "?_r=" + Math.random(1) : 9 == d.error ? window.location.href = "/member#mod_email" : 10 == d.error ? window.location.href = "http://mail.qq.com" : 1 == d.error && (window.location.href = "/room/my"),
-                                    !0
-                            }
-                        })
+                    void b.getCSRFCookie(f, function (d) {
+                        var e = {};
+                        e[d.name] = d.val,
+                            a.ajax({
+                                url: "/room/my/first_show",
+                                dataType: "json",
+                                type: "POST",
+                                data: e,
+                                success: function (d) {
+                                    b.loading.close(),
+                                        c.data("doing", 0);
+                                    var e = "warning";
+                                    if (0 == d.error)
+                                        c.addClass("switch_on"),
+                                            e = "succeed";
+                                    else {
+                                        if (3 == d.error)
+                                            return void a.dialog.alert("异常关闭<br />原因：<b>" + d.msg.reason + "</b><br />剩余限时：<span style='color: red'>" + d.msg.open_time + "</span>");
+                                        e = "warning"
+                                    }
+                                    a.dialog({
+                                        icon: e,
+                                        content: d.msg,
+                                        lock: !0,
+                                        okVal: "确定",
+                                        ok: function () {
+                                            return "succeed" == e ? window.location.href = "/" + $ROOM.room_id + "?_r=" + Math.random(1) : 9 == d.error ? window.location.href = "/member#mod_email" : 10 == d.error ? window.location.href = "http://mail.qq.com" : 1 == d.error && (window.location.href = "/room/my"),
+                                                !0
+                                        }
+                                    })
+                                }
+                            })
                     }))
+            },
+            getCSRFCookie: function (b, c) {
+                var d = this
+                    , e = b.get($SYS.tvk);
+                if (!e)
+                    return void a.ajax({
+                        url: "/curl/csrfApi/getCsrfCookie",
+                        type: "GET",
+                        dataType: "json",
+                        success: function (a) {
+                            0 === a.error && d.getCSRFCookie(b, c)
+                        }
+                    });
+                var f = $SYS.tn;
+                c && c({
+                    name: f,
+                    val: e
+                })
             }
         });
         e.on("mod.center.userrole.ready", function (a) {
@@ -7450,7 +7521,7 @@ ZeroClipboard.Client.prototype = {
                 if (b && b.gt && b.gn) {
                     var d = b.gt
                         , e = c.getFishShowIcon(d);
-                    e && a(".fishshow_con").append('<img class="week_gift_img" title="鱼秀专区周星奖励，获得最多的' + b.gn + '。图标有效期7天。"  src="' + e.medal_icon + '" >');
+                    e && a(".fishshow_con").append('<img class="week_gift_img" title="鱼秀专区周星奖励，获得最多的' + b.gn + '。图标有效期7天。"  src="' + e.medal_icon + '" >')
                 }
             }
         })
@@ -7834,8 +7905,8 @@ ZeroClipboard.Client.prototype = {
                             f.goldBox.html(b.gold)
                     }),
                     e.reg("room_data_expchange", function (a) {
-                        d.decode(a).too(),
-                            b.exprienceUpdate(a)
+                        d.decode(a).too();
+                        b.exprienceUpdate(a)
                     })
             },
             getFlashData: function () {
@@ -7894,7 +7965,7 @@ ZeroClipboard.Client.prototype = {
             },
             returnUlevelIcon: function (a) {
                 var b = this;
-                return g.get("sys.web_url") + "/app/douyu/res/page/room-normal/level/LV" + (a < b.config.highLevel + 1 ? a : b.config.highLevel) + (a >= 40 ? ".gif" : ".png") + "?" + Math.random()
+                return g.get("sys.web_url") + "/app/douyu/res/page/room-normal/level/LV" + (a < b.config.highLevel + 1 ? a : b.config.highLevel) + (a >= 40 ? ".gif" : ".png") + "?20160518"
             },
             updateProgress: function () {
                 var a, b = this.doms, c = this.exp_json.current.score, d = (this.userTotleExp - c) / (this.nextUpExp - c) * 100;
@@ -9085,8 +9156,10 @@ ZeroClipboard.Client.prototype = {
             }
         };
         n = b({
-            init: function (b) {
+            init: function () {
                 this.config = a.extend(!0, {}, {
+                    ncqMaxLev: 4,
+                    cqMaxLev: 6,
                     islog: !1,
                     target: "#js-stats-and-actions .get-yw",
                     time: ".g-time",
@@ -9095,11 +9168,11 @@ ZeroClipboard.Client.prototype = {
                     personal_yw: '[data-login-user="silver"]',
                     state: r.yw.state.close,
                     firstLoad: !0,
-                    level: "",
+                    timer: !0,
                     list: {
                         wait: {
                             timeText: "",
-                            content: "别着急，鱼丸正在制作中，领取鱼丸还能涨经验呢……",
+                            content: "别着急，奖励正在准备中，不仅有鱼丸还有经验呢……",
                             cls: "get-state-next",
                             pic: "wait-get",
                             cqPic: "w-cq-get",
@@ -9109,7 +9182,7 @@ ZeroClipboard.Client.prototype = {
                         },
                         may: {
                             timeText: "可领取",
-                            content: "鱼丸做好了，请点击领取您的鱼丸和经验值！",
+                            content: "请点击领取您的奖励！",
                             cls: "get-state-udrw",
                             pic: "may-get",
                             cqPic: "cq-get",
@@ -9134,280 +9207,221 @@ ZeroClipboard.Client.prototype = {
                             btn: "yet-btn",
                             text: "已领取"
                         }
+                    }
+                }),
+                    this.state = {
+                        cq: 0,
+                        level: 0,
+                        time: 0,
+                        over: !1,
+                        yw: 0,
+                        exp: 0
                     },
-                    timer: !0,
-                    userCq: -1,
-                    userinfo: !1,
-                    isBan: !1
-                }, b),
+                    this.getDoms(),
                     this.render(),
                     this.bindEvt()
             },
+            getDoms: function () {
+                var b = this
+                    , c = a(this.config.target)
+                    , d = a(this.config.pop);
+                this.doms = {
+                    $el: c,
+                    $time: a(b.config.time),
+                    $pic: a(b.config.pic),
+                    $pop: d,
+                    $personal_yw: a(b.config.personal_yw),
+                    $yws: d.find(".cb-list li"),
+                    $ywPics: d.find(".cb-list li span"),
+                    $ywBtns: d.find(".cb-list li a"),
+                    $text: d.find(".c-txt")
+                }
+            },
             render: function () {
-                var b = this;
-                this.config.$el = a(this.config.target),
-                    this.config.$time = a(this.config.time),
-                    this.config.$pic = a(this.config.pic),
-                    this.config.$pop = a(this.config.pop),
-                    this.config.$personal_yw = a(this.config.personal_yw),
+                var a = this;
+                this.initList(),
                     this.observer = c.create(this),
                     this.observer.on("login", this.isLog),
                     this.observer.on("toggle", this.toggle),
+                    this.observer.on("cq.over", function (b) {
+                        a.renderTime("cqover", b),
+                            a.renderList("cqover", b),
+                            a.renderText("over")
+                    }),
+                    this.observer.on("ncq.over", function (b) {
+                        a.renderTime("ncqover", b),
+                            a.renderList("ncqover", b),
+                        a.config.firstLoad && b.over && a.renderText("over")
+                    }),
+                    this.observer.on("wait", function (b) {
+                        a.renderTime("wait", b),
+                            a.renderList("wait", b)
+                    }),
+                    this.observer.on("may", function (b) {
+                        a.renderTime("may", b),
+                            a.renderList("may", b),
+                            b.over ? a.renderText("over") : a.renderText("may")
+                    }),
                     c.on("mod.userinfo.userinfoready", function () {
-                        b.config.userinfo = !0
+                        a.config.userinfo = !0
                     }),
-                    c.trigger("mod.chouqin.change", function (a) {
-                        b.config.userCq = a
+                    c.trigger("mod.chouqin.change", function (b) {
+                        a.config.userCq = b
                     }),
-                    c.on("mod.olyw.destroy", function (a) {
-                        a = !a,
-                            b.toggleBan(a)
+                    c.on("mod.olyw.destroy", function (b) {
+                        b = !b,
+                            a.toggleBan(b)
                     }),
-                    i.reg("room_data_chest", function (a) {
-                        b.showTime(a)
+                    c.on("mod.chouqin.change", function (b) {
+                        a.setState({
+                            cq: 4
+                        })
+                    }),
+                    i.reg("room_data_chest", function (b) {
+                        a.getFlashTime(b)
                     }),
                     i.reg("room_data_olyw", function (a) {
                         c.trigger("mod.chat.msg.res.olyw.luckburst", a)
                     })
             },
-            isLog: function () {
-                this.config.islog = !0
+            setState: function (b) {
+                var c = this;
+                this.state = a.extend(!0, {}, c.state, b)
             },
-            toggleBan: function (b) {
-                b ? (this.config.isBan = !0,
-                    a(".get-yw .g-time").hide(),
-                    this.config.$pop.hide().addClass("hide")) : (this.config.isBan = !1,
-                    a(".get-yw .g-time").show())
+            initList: function () {
+                var a = this.doms.$el;
+                a.find(".cb-list li");
+                this.renderAllList("wait", this.config.cqMaxLev),
+                    this.renderText("wait")
             },
-            number_format: function () {
-                if (!a.isNumeric(num))
-                    return num;
-                if (num = String(num),
-                    num.indexOf(".") <= 0)
-                    return num;
-                var b = num.split(".");
-                return b[1] = b[1].substr(0, 2),
-                    b.join(".")
-            },
-            showTip: function () {
-                "1" !== this.check() && (setTimeout(function () {
-                    a(".get-fc").length && a(".get-fc").removeClass("hide").show()
-                }, 2e4),
-                    this.save())
-            },
-            check: function () {
-                var a = e.get(r.yw.cookie);
-                return a
-            },
-            save: function () {
-                e.set(r.yw.cookie, "1", 28800)
-            },
-            open: function () {
-                this.config.state = r.yw.state.open,
-                    this.config.$pop.removeClass("hide").show(),
-                    a("#js-yw-rmd-rooms").length <= 0 ? (this.config.$pop.find(".yw-app-des").eq(0).before('<div id="js-yw-rmd-rooms"></div>'),
-                        m.ywinit()) : m.ywRmdRefresh()
-            },
-            close: function () {
-                this.config.state = r.yw.state.close,
-                    this.config.$pop.addClass("hide").hide()
-            },
-            toggle: function () {
-                this.config.state === r.yw.state.open ? this.close() : this.config.isBan || this.open()
-            },
-            getData: function (a, b) {
-                var c, d, e, f = this.config.userCq, g = this.config.level;
-                if (a) {
-                    var h = (h = Math.floor(a / 60)) < 10 ? "0" + h : h
-                        , i = (i = a % 60) < 10 ? "0" + i : i
-                        , j = h + ":" + i;
-                    c = this.setConfig({
-                        list: {
-                            index: g - 1
-                        },
-                        text: {
-                            content: this.config.list.wait.content,
-                            cls: this.config.list.wait.cls
-                        },
-                        time: {
-                            value: j
-                        }
-                    })
-                } else
-                    f && 6 >= g || !f ? (d = this.config.list[b] || this.config.list.may,
-                        c = this.setConfig({
-                            time: {
-                                enable: !1,
-                                value: d.timeText
-                            },
-                            list: {
-                                index: g - 1,
-                                pic: d.pic,
-                                cqPic: d.cqPic,
-                                btn: d.btn,
-                                text: d.text
-                            },
-                            text: {
-                                content: d.content,
-                                cls: d.cls
-                            }
-                        })) : (e = this.config.list.over,
-                        c = this.setConfig({
-                            list: {
-                                index: g - 1
-                            },
-                            time: {
-                                over: !0,
-                                enable: !0,
-                                value: e.timeText
-                            },
-                            text: {
-                                content: e.content,
-                                cls: e.cls
-                            }
-                        }));
-                return c
-            },
-            showTime: function (a) {
+            getFlashTime: function (a) {
                 var b = j.decode(a)
                     , c = Number(b[0].value)
                     , d = Number(b[1].value)
                     , e = Number(b[2].value);
-                this.config.isBan || (this.config.newTime = d ? d + 60 : d,
-                    this.config.userCq = e,
-                    this.config.level = c,
-                this.config.firstLoad && this.updateTime())
+                this.config.isBan || (d = d ? d + 60 : d,
+                    this.setState({
+                        cq: e,
+                        level: c,
+                        time: d
+                    }),
+                this.config.firstLoad && (this.updateTime(),
+                    this.config.firstLoad = !1))
             },
             updateTime: function () {
                 var a = this
-                    , b = (this.config.$el,
-                    this.config.$time,
-                    this.config.newTime)
-                    , c = this.getData(b)
-                    , d = this.config.list.over.timeText;
-                this.config.userCq && this.config.level > 6 && (c.time = {
-                    over: !0,
-                    enable: !1,
-                    value: d
-                },
-                    c.text = {
-                        content: this.config.list.over.content,
-                        cls: this.config.list.over.cls
+                    , b = (this.doms.$el,
+                    this.doms.$time,
+                    this.state);
+                return this.setState({
+                    over: !1
+                }),
+                    b.cq && b.level > this.config.cqMaxLev ? (this.setState({
+                        over: !0
                     }),
-                !this.config.userCq && this.config.level > 4 && (c.time.over = !0),
-                this.config.firstLoad && (c.isFirst = !0,
-                    c = this.setConfig(c),
-                this.config.userCq || 5 !== this.config.level || (c.text.content = this.config.list.over.content,
-                    c.text.cls = this.config.list.over.cls),
-                    this.initList(),
-                    this.renderList(c),
-                    this.renderText(c),
-                    this.config.firstLoad = !1),
-                    this.renderTime(c),
-                    a.config.newTime >= 1 ? a.config.newTime-- : (clearTimeout(a.config.timer),
-                        a.config.timer = null ,
-                        a.renderList(c),
-                        a.renderText(c)),
-                a.config.timer && (a.config.timer = setTimeout(function () {
-                    a.updateTime()
-                }, 1e3))
+                        void this.observer.trigger("cq.over", b)) : (!b.cq && b.level > this.config.ncqMaxLev && (this.setState({
+                        over: !0
+                    }),
+                        this.observer.trigger("ncq.over", b)),
+                        b.time >= 1 ? (this.state.time--,
+                            this.observer.trigger("wait", b)) : (clearTimeout(a.config.timer),
+                            a.config.timer = null ,
+                            this.observer.trigger("may", a.state)),
+                        void (a.config.timer && (a.config.timer = setTimeout(function () {
+                            a.updateTime()
+                        }, 1e3))))
             },
-            setConfig: function (b) {
-                var b = b || {}
-                    , c = this.config.list.wait
-                    , d = a.extend(!0, {}, {
-                    list: {
-                        index: c.index,
-                        pic: c.pic,
-                        cqPic: c.cqPic,
-                        btn: c.btn,
-                        text: c.text,
-                        cqText: c.cqText
-                    },
-                    text: {
-                        context: c.context,
-                        cls: c.cls
-                    },
-                    time: {
-                        enable: "",
-                        value: c.timeText
-                    }
-                }, b);
-                return b.type && b.type in d ? d[type] : d
+            renderTime: function (a, b) {
+                var c = this.config.list
+                    , d = 0;
+                if (b.time)
+                    var e = (e = Math.floor(b.time / 60)) < 10 ? "0" + e : e
+                        , f = (f = b.time % 60) < 10 ? "0" + f : f
+                        , d = e + ":" + f;
+                var g = this.config.cqMaxLev + 1;
+                "cqover" === a && (this.doms.$time.html(c.over.timeText),
+                    this.doms.$pic.removeClass().addClass("g-pic close" + g)),
+                "ncqover" === a && (this.doms.$time.html(d || c.may.text),
+                    this.doms.$pic.removeClass().addClass("g-pic close" + g)),
+                "wait" === a && (this.doms.$time.html(d),
+                    this.doms.$pic.removeClass().addClass("g-pic close" + b.level)),
+                "may" === a && (this.doms.$time.html(c.may.text),
+                    this.doms.$pic.removeClass().addClass("g-pic get" + b.level),
+                b.over && (this.doms.$time.html(c.over.timeText),
+                    this.doms.$pic.removeClass().addClass("g-pic close" + g)))
             },
-            initList: function () {
-                var b = this.config.$el
-                    , c = b.find(".cb-list li")
-                    , d = this.setConfig().list;
-                c.each(function (b, c) {
-                    3 >= b ? (a(c).find("span").removeClass().addClass(d.pic).end().find("a").removeClass().addClass(d.btn),
-                        a(c).find("a").html(d.text)) : (a(c).find("span").removeClass().addClass(d.cqPic).end().find("a").removeClass().addClass(d.btn),
-                        a(c).find("a").html(d.cqText))
+            renderList: function (a, b) {
+                var c = this.config.list;
+                this.doms;
+                "cqover" === a && this.renderAllList("yet", this.config.cqMaxLev),
+                "ncqover" === a && this.renderAllList("yet", this.config.ncqMaxLev),
+                "wait" === a && this.renderAllList("yet", b.level - 1),
+                "may" === a && (this.renderAllList("yet", b.level - 1),
+                    b.level > this.config.ncqMaxLev ? this.doms.$yws.eq(b.level - 1).find("span").removeClass().addClass(c.may.cqPic).end().find("a").html(c.may.text).removeClass().addClass(c.may.btn) : this.doms.$yws.eq(b.level - 1).find("span").removeClass().addClass(c.may.pic).end().find("a").html(c.may.text).removeClass().addClass(c.may.btn)),
+                "yet" === a && this.renderAllList("yet", b.level)
+            },
+            renderAllList: function (b, c) {
+                var d = this
+                    , e = this.config.list;
+                "yet" === b && this.doms.$yws.each(function (b, d) {
+                    c > b && a(d).find("span").removeClass().addClass("yet").end().find("a").html(e.yet.text).removeClass().addClass(e.yet.btn)
+                }),
+                "wait" === b && this.doms.$yws.each(function (b, f) {
+                    c > b && (b + 1 <= d.config.ncqMaxLev ? a(f).find("span").removeClass().addClass(e.wait.pic).end().find("a").html(e.wait.text).removeClass().addClass(e.wait.btn) : a(f).find("span").removeClass().addClass(e.wait.cqPic).end().find("a").html(e.wait.cqText).removeClass().addClass(e.wait.btn))
                 })
             },
-            renderTime: function (a) {
-                var b = this.config.$time
-                    , c = this.config.$pic
-                    , d = this.setConfig(a).time
-                    , e = this.config.level
-                    , f = this.config.list.may.timeText
-                    , g = "g-pic close" + e;
-                d.enable || "" === d.enable || (g = "g-pic get" + e),
-                d.enable && (g = d.value === f ? "g-pic get" + e : "g-pic close" + e),
-                d.over && (g = "g-pic close7"),
-                    b.html(d.value),
-                    c.removeClass().addClass(g)
+            renderText: function (a, b) {
+                var c = this.config.list;
+                switch (a) {
+                    case "wait":
+                        this.doms.$text.removeClass().addClass("c-txt").addClass(c.wait.cls).html(c.wait.content);
+                        break;
+                    case "may":
+                        this.doms.$text.removeClass().addClass("c-txt").addClass(c.may.cls).html(c.may.content);
+                        break;
+                    case "yet":
+                        b && this.doms.$text.removeClass().addClass("c-txt").addClass(b.cls).html(b.content);
+                        break;
+                    case "over":
+                        this.doms.$text.removeClass().addClass("c-txt").addClass(c.over.cls).html(c.over.content);
+                        break;
+                    default:
+                        this.doms.$text.removeClass().addClass("c-txt").addClass(c.wait.cls).html(c.wait.content)
+                }
             },
-            renderList: function (b) {
-                var c = this.config.$el
-                    , d = c.find(".cb-list li")
-                    , e = this.setConfig(b).list
-                    , f = this.setConfig(b).time;
-                (!f.enable && e.btn === this.config.list.may.btn || f.enable && e.btn !== this.config.list.may.btn) && (e.index <= 3 ? d.eq(e.index).find("span").removeClass().addClass(e.pic).end().find("a").removeClass().addClass(e.btn).html(e.text) : d.eq(e.index).find("span").removeClass().addClass(e.cqPic).end().find("a").removeClass().addClass(e.btn).html(e.text)),
-                b.isFirst && (yet = this.config.list.yet,
-                    e.index >= 1 && e.index < 6 ? yetAtt = d.eq(e.index).prevAll() : e.index >= 6 ? yetAtt = d : yetAtt = [],
-                    a.each(yetAtt, function (b, c) {
-                        a(c).find("span").removeClass().addClass(yet.pic),
-                            a(c).find("a").removeClass().addClass(yet.btn).text(yet.text)
-                    }))
-            },
-            renderText: function (a) {
-                var b = this.config.$el
-                    , c = b.find(".c-txt")
-                    , d = this.setConfig(a).text;
-                c.removeClass().addClass("c-txt").addClass(d.cls).html(d.content)
-            },
-            renderExp: function (a) {
-                var b = this.config.$pop;
-                b.append('<div class="exp-add"><div class="exprience1"><p><span>经验值 +' + a + "</span></p></div></div>");
-                var c = b.find(".exprience1")
-                    , d = (b.width() - c.width()) / 2;
-                c.css({
+            renderTip: function (a, b) {
+                var c = this.doms.$pop;
+                "yw" === a ? c.append('<div class="exp-add"><div class="exprience1"><p><span> +' + b + "鱼丸</span></p></div></div>") : c.append('<div class="exp-add"><div class="exprience1"><p><span> +' + b + "经验</span></p></div></div>");
+                var d = c.find(".exprience1")
+                    , e = (c.width() - d.width()) / 2;
+                d.css({
                     position: "absolute",
-                    left: d,
+                    left: e,
                     top: "80px",
                     "z-index": 200
                 }),
-                    c.stop().animate({
+                    d.stop().animate({
                         top: "5px"
                     }, 1e3).fadeOut("slow", function () {
-                        c.remove()
+                        d.remove()
                     })
             },
             checkTotalYw: function (b) {
                 var c;
-                return this.config.userinfo ? (c = this.config.$personal_yw.text(),
+                return this.config.userinfo ? (c = this.doms.$personal_yw.text(),
                     c > 2e3 ? a.dialog.alert("鱼丸存量超过2000啦! 暂时无法在线领鱼丸(其他获取鱼丸途径不受影响),<br>送点鱼丸给主播再来领取吧!") : b && b()) : b && b(),
                     c
             },
             handleReturn: function (b, d) {
                 var e = b.result
-                    , f = b.gift_count
-                    , g = parseInt(b.leve)
-                    , h = this.config.userCq
-                    , i = (this.config.$personal_yw,
-                    3 >= d ? 2 : 4);
-                if (2 == b.ret)
+                    , f = parseInt(b.leve)
+                    , g = this.state.cq
+                    , h = b.gift_count || 0
+                    , i = b.exp / 100 || 0
+                    , j = (this.doms.$personal_yw,
+                {})
+                    , k = "";
+                if (2 == e)
                     a.dialog({
                         content: "当前ip输入验证码时错误次数过多，请等待一天后在重新尝试！",
                         icon: "warning",
@@ -9415,7 +9429,7 @@ ZeroClipboard.Client.prototype = {
                         ok: function () {
                         }
                     });
-                else if (1 == b.ret)
+                else if (1 == e)
                     a.dialog.tips_black("验证码输入错误", 1),
                         p.refresh();
                 else if (0 == e) {
@@ -9425,100 +9439,96 @@ ZeroClipboard.Client.prototype = {
                         }),
                         c.trigger("mod.userinfo.change", {
                             change: {
-                                silver: f,
-                                exp: i
+                                silver: h
                             }
                         }),
                         q.submit({
                             point_id: "5.4.5.0",
                             ext: {
-                                yw: f
+                                yw: h
                             }
+                        });
+                    var l = parseInt(b.lack_time);
+                    l && (l += 60),
+                        this.setState({
+                            cq: g,
+                            level: f,
+                            time: l
                         }),
-                        this.config.level = g,
-                        this.config.userCq = h;
-                    var j = this.getData(0, "yet")
-                        , k = parseInt(b.lack_time);
-                    if (k) {
-                        k += 60;
-                        var l = (l = Math.floor(k / 60)) < 10 ? "0" + l : l
-                            , m = (m = k % 60) < 10 ? "0" + m : m
-                            , n = l + ":" + m
-                    }
-                    var o = k ? k : this.config.list.may.timeText;
-                    j.time = {
-                        enable: !0,
-                        value: n || o
-                    },
-                        f >= 1e3 ? j.text = {
-                            content: "幸运女神眷顾您，恭喜您领取了<b>" + f + "个鱼丸</b>！",
+                        k = h ? i ? "cq" : "yw" : "exp",
+                        "yw" === k ? (j = h >= 1e3 ? {
+                            content: "幸运女神眷顾您，恭喜您领取了<b>" + h + "个鱼丸</b>！",
                             cls: "get-state-special"
-                        } : !h && 4 >= g || h && 6 >= g ? j.text = {
-                            content: "恭喜你领取了<b>" + f + "个鱼丸</b>和<b>" + i + "</b>点经验，领取酬勤专享鱼丸可获双倍经验！",
-                            cls: this.config.list.yet.cls
-                        } : j.text = {
-                            content: "恭喜你领取了<b>" + f + "个鱼丸</b>和<b>" + i + "</b>点经验，领取酬勤专享鱼丸可获双倍经验！",
-                            cls: this.config.list.yet.cls
+                        } : {
+                            content: "恭喜你领取了<b>" + h + "个鱼丸</b>，领取酬勤专享鱼丸可获双倍鱼丸！",
+                            cls: "get-state-ard"
                         },
-                        this.renderExp(i),
-                        this.config.newTime = k,
-                        o = this.config.list.over.timeText,
-                    h && 6 === g && (j.time = {
-                        over: !0,
-                        enable: !0,
-                        value: o
-                    }),
-                    (!h || h && 6 > g) && (this.config.timer = !0,
+                            this.renderTip(k, h)) : "exp" === k ? (j = {
+                            content: "恭喜你领取了<b>" + i + "经验</b>，领取酬勤专享经验可获双倍经验！",
+                            cls: "get-state-ard"
+                        },
+                            this.renderTip(k, i)) : "cq" === k && (j = h >= 1e3 ? {
+                            content: "幸运女神眷顾您，恭喜您领取了<b>" + h + "个鱼丸</b>！",
+                            cls: "get-state-special"
+                        } : {
+                            content: "恭喜你领取了<b>" + h + "个鱼丸</b>和<b>" + i + "</b>点经验，领取酬勤专享鱼丸可获双倍经验！",
+                            cls: "get-state-ard"
+                        },
+                            this.renderTip(k, i)),
+                        this.renderText("yet", j),
+                        l ? (this.renderTime("wait", this.state),
+                            this.renderList("yet", this.state),
+                            this.setState({
+                                level: f + 1
+                            })) : (this.setState({
+                            level: f + 1
+                        }),
+                            this.renderTime("may", this.state)),
+                    (!g || g && 6 > f) && (this.config.timer = !0,
                         this.updateTime()),
-                        this.renderTime(j),
-                        this.renderList(j),
-                        this.renderText(j),
-                        this.config.level = g + 1,
-                    k || (j = this.getData(0, "may"),
-                        j.text.content = this.config.list.over.content,
-                        j.text.cls = this.config.list.over.cls,
-                        j.time.over = !0,
-                        this.renderTime(j),
-                        this.renderList(j),
-                        this.renderText(j))
+                    g && 6 === f && (this.setState({
+                        over: !0
+                    }),
+                        this.observer.trigger("cq.over", this.state)),
+                    g || 4 !== f || this.observer.trigger("ncq.over", this.state)
                 } else {
-                    var r = ""
-                        , s = "/member";
+                    var m = ""
+                        , n = "/member";
                     switch (e) {
                         case "216":
-                            r = "需要绑定手机和邮箱才能领取鱼丸！",
-                                s = "/member";
+                            m = "需要绑定手机和邮箱才能领取鱼丸！",
+                                n = "/member";
                             break;
                         case "218":
-                            r = "需要绑定手机才能领取鱼丸!",
-                                s = "/member#phone";
+                            m = "需要绑定手机才能领取鱼丸!",
+                                n = "/member#phone";
                             break;
                         case "219":
-                            r = "需要绑定邮箱才能领取鱼丸!",
-                                s = "/member#mod_email";
+                            m = "需要绑定邮箱才能领取鱼丸!",
+                                n = "/member#mod_email";
                             break;
                         case "270":
-                            r = "请稍后再试!";
+                            m = "请稍后再试!";
                             break;
                         case "283":
-                            r = "鱼丸存量超过2000啦! 暂时无法在线领鱼丸(其他获取鱼丸途径不受影响),<br>送点鱼丸给主播再来领取吧!";
+                            m = "鱼丸存量超过2000啦! 暂时无法在线领鱼丸(其他获取鱼丸途径不受影响),<br>送点鱼丸给主播再来领取吧!";
                             break;
                         case "212":
-                            r = "非酬勤用户无法领取!";
+                            m = "非酬勤用户无法领取!";
                             break;
                         default:
-                            r = "鱼丸领取失败！"
+                            m = "鱼丸领取失败！"
                     }
-                    "363" == b.result ? a(".get-defeat").removeClass("hide").show() : "214" == b.result && a(".get-defeat2").removeClass("hide").show(),
+                    "363" == e ? a(".get-defeat").removeClass("hide").show() : "214" == e && a(".get-defeat2").removeClass("hide").show(),
                         "216" == e || "218" == e || "219" == e ? a.dialog({
-                            content: r,
+                            content: m,
                             title: "提示",
                             icon: "warning",
                             cancelVal: "以后再说",
                             okVal: "立即绑定",
                             lock: !0,
                             ok: function () {
-                                window.location.href = s
+                                window.location.href = n
                             },
                             cancel: function () {
                                 p.destroy(),
@@ -9526,7 +9536,7 @@ ZeroClipboard.Client.prototype = {
                                         point_id: "5.4.2.0"
                                     })
                             }
-                        }) : a.dialog.alert(r)
+                        }) : a.dialog.alert(m)
                 }
             },
             toggleCqTip: function () {
@@ -9548,7 +9558,7 @@ ZeroClipboard.Client.prototype = {
             },
             handleSubmit: function (b) {
                 var c = this
-                    , d = this.config.userCq
+                    , d = this.state.cq
                     , e = "open";
                 !d && b >= 4 ? this.toggleCqTip(e) : this.checkTotalYw(function () {
                     q.submit({
@@ -9566,7 +9576,7 @@ ZeroClipboard.Client.prototype = {
                                     point_id: "5.4.4.0"
                                 });
                                 var e = {};
-                                e.leve = c.config.level,
+                                e.leve = c.state.level,
                                     e.task_ca = d,
                                     e.room_id = $ROOM.room_id,
                                     a.ajax("/member/cp/get_box_reward", {
@@ -9583,6 +9593,41 @@ ZeroClipboard.Client.prototype = {
                         })
                 })
             },
+            isLog: function () {
+                this.config.islog = !0
+            },
+            toggleBan: function (b) {
+                b ? (this.config.isBan = !0,
+                    a(".get-yw .g-time").hide(),
+                    this.config.$pop.hide().addClass("hide")) : (this.config.isBan = !1,
+                    a(".get-yw .g-time").show())
+            },
+            showTip: function () {
+                "1" !== this.check() && (setTimeout(function () {
+                    a(".get-fc").length && a(".get-fc").removeClass("hide").show()
+                }, 2e4),
+                    this.save())
+            },
+            check: function () {
+                var a = e.get(r.yw.cookie);
+                return a
+            },
+            save: function () {
+                e.set(r.yw.cookie, "1", 28800)
+            },
+            open: function () {
+                this.config.state = r.yw.state.open,
+                    this.doms.$pop.removeClass("hide").show(),
+                    a("#js-yw-rmd-rooms").length <= 0 ? (this.doms.$pop.find(".yw-app-des").eq(0).before('<div id="js-yw-rmd-rooms"></div>'),
+                        m.ywinit()) : m.ywRmdRefresh()
+            },
+            close: function () {
+                this.config.state = r.yw.state.close,
+                    this.doms.$pop.addClass("hide").hide()
+            },
+            toggle: function () {
+                this.config.state === r.yw.state.open ? this.close() : this.config.isBan || this.open()
+            },
             bindEvt: function () {
                 function b(a) {
                     a.stopPropagation(),
@@ -9590,9 +9635,9 @@ ZeroClipboard.Client.prototype = {
                 }
 
                 var d = this
-                    , e = this.config.$el
-                    , f = (this.config.$lead_close,
-                    this.config.$pop);
+                    , e = this.doms.$el
+                    , f = (this.doms.$lead_close,
+                    this.doms.$pop);
                 f.on("click", ".close", function (a) {
                     b(a),
                         d.observer.trigger("toggle")
@@ -9842,12 +9887,18 @@ ZeroClipboard.Client.prototype = {
                     this.config.state = j.cq.state.open,
                     this.renderProgress(),
                     b.removeClass("hide"),
-                    b.show()
+                    b.show(),
+                    i.submit({
+                        point_id: i.point.page(5, 3)
+                    })
             },
             close: function () {
                 var a = this.config.$el;
                 this.config.state = j.cq.state.close,
-                    a.hide()
+                    a.hide(),
+                    i.submit({
+                        point_id: i.point.page(5, 5)
+                    })
             },
             toggle: function () {
                 this.config.state === j.cq.state.open ? this.close() : this.open()
@@ -9989,11 +10040,11 @@ ZeroClipboard.Client.prototype = {
                                 case "0":
                                     var f = (parseInt(b.config.$personal_yc),
                                         a(".cq_btn").eq(d - 1))
-                                        , i = document.createElement("div");
-                                    a(i).addClass("cq_contribute"),
-                                        3 === parseInt(d) ? a(i).html('<div class="cq_contribution_p"></div><span>贡献值+500</span>') : a(i).html('<div class="cq_contribution_p"></div><span>贡献值+' + 150 * d + "</span>"),
-                                        f.append(i),
-                                        a(i).animate({
+                                        , j = document.createElement("div");
+                                    a(j).addClass("cq_contribute"),
+                                        3 === parseInt(d) ? a(j).html('<div class="cq_contribution_p"></div><span>贡献值+500</span>') : a(j).html('<div class="cq_contribution_p"></div><span>贡献值+' + 150 * d + "</span>"),
+                                        f.append(j),
+                                        a(j).animate({
                                             top: "-93px"
                                         }, 1e3).fadeOut(400, function () {
                                             a(this).remove()
@@ -10007,7 +10058,13 @@ ZeroClipboard.Client.prototype = {
                                             }
                                         }),
                                         e.trigger("mod.chouqin.change", d),
-                                        a("#cq-usergold").html(b.number_format(c.ret.balance / 100).replace(".00", ""));
+                                        a("#cq-usergold").html(b.number_format(c.ret.balance / 100).replace(".00", "")),
+                                        i.submit({
+                                            point_id: i.point.page(5, 4),
+                                            ext: {
+                                                lv: d
+                                            }
+                                        });
                                     break;
                                 case "283":
                                     a.dialog({
@@ -10481,10 +10538,10 @@ ZeroClipboard.Client.prototype = {
                 b.doms.$el.html(m),
                     a("#new_face_list .face_container .section").each(function (c, d) {
                         var e = b.config.row * (b.config.col - 1);
-                        a(d).find("em").length,
-                            a(d).find("em").each(function (c, d) {
-                                (c + 1) % b.config.col == 0 && c + 1 >= e ? a(d).addClass("emBRN emBBN") : (c + 1) % b.config.col != 0 && c + 1 >= e ? a(d).addClass("emBBN") : (c + 1) % b.config.col == 0 && e > c + 1 ? a(d).addClass("emBRN") : (c + 1) % b.config.col != 0 && e > c + 1 && a(d).addClass("")
-                            })
+                        a(d).find("em").length;
+                        a(d).find("em").each(function (c, d) {
+                            (c + 1) % b.config.col == 0 && c + 1 >= e ? a(d).addClass("emBRN emBBN") : (c + 1) % b.config.col != 0 && c + 1 >= e ? a(d).addClass("emBBN") : (c + 1) % b.config.col == 0 && e > c + 1 ? a(d).addClass("emBRN") : (c + 1) % b.config.col != 0 && e > c + 1 && a(d).addClass("")
+                        })
                     }),
                     b.doms.$el.css({
                         width: d + 24 + 2 + "px",
@@ -10665,11 +10722,11 @@ ZeroClipboard.Client.prototype = {
             },
             bindEvent: function () {
                 var b = this;
-                this.doms,
-                    a(document).on("click touchstart", ".face-box .up", function (a) {
-                        i.config.fullpageThumbMove = !0,
-                            i.pageUp()
-                    }),
+                this.doms;
+                a(document).on("click touchstart", ".face-box .up", function (a) {
+                    i.config.fullpageThumbMove = !0,
+                        i.pageUp()
+                }),
                     a(document).on("click touchstart", ".face-box .down", function (a) {
                         i.config.fullpageThumbMove = !0,
                             i.pageDown()
@@ -10923,7 +10980,8 @@ ZeroClipboard.Client.prototype = {
                 },
                 _execNodeBehavior: function (b, c, d, e) {
                     var f = b[c];
-                    return b && a.isFunction(f) ? b.scope ? f.call(b.scope, d, e) : f(d, e) : void 0
+                    if (b && a.isFunction(f))
+                        return b.scope ? f.call(b.scope, d, e) : f(d, e)
                 },
                 _isNodeTimeout: function (a, b) {
                     return a.timeout ? b - a.createTime >= a.timeout : !1
@@ -10941,7 +10999,8 @@ ZeroClipboard.Client.prototype = {
                 },
                 use: function (a, b) {
                     var c = n.cache[a];
-                    return c ? "function" == typeof c ? c(b) : c : void 0
+                    if (c)
+                        return "function" == typeof c ? c(b) : c
                 },
                 run: function (a) {
                     return 0 === arguments.length ? n.isRunling : void (n.isRunling = a === !0)
@@ -10958,7 +11017,8 @@ ZeroClipboard.Client.prototype = {
                 query: function (a, b) {
                     for (var c, d, e, f = 0, g = n.queue.length, h = a.split("."), i = 0, j = h.length, k = []; g > f; f++) {
                         for (c = n.queue[f],
-                                 i = 0; j > i && (c = c[h[i]]); i++)
+                                 i = 0; j > i && (c = c[h[i]],
+                            c); i++)
                             ;
                         if (i === j && c === b) {
                             for (d = f,
@@ -11016,7 +11076,8 @@ ZeroClipboard.Client.prototype = {
                 target: function (b) {
                     return b ? (this.$target = a(b),
                         this.$target.append(this.$batter1),
-                        void this.$target.append(this.$batter2)) : this.$target
+                        this.$target.append(this.$batter2),
+                        void 0) : this.$target
                 },
                 cssbox: function (b) {
                     return b ? void (this.$cssbox = a(b)) : this.$cssbox
@@ -11628,8 +11689,8 @@ ZeroClipboard.Client.prototype = {
                         ({
                             x: (k.width() - q.w) / 2,
                             y: k.height() - 20
-                        }),
-                            i.append(k),
+                        });
+                        i.append(k),
                             k.css({
                                 width: i.width(),
                                 height: p.cssbox().outerHeight(!0) - k.height(),
@@ -11838,24 +11899,27 @@ ZeroClipboard.Client.prototype = {
                                     if ("" != k[o]) {
                                         var q = f.decode(k[o]).too()
                                             , r = {};
-                                        r = {
-                                            TYPE: j.nodeType.peck,
-                                            createTime: (new Date).getTime(),
-                                            gid: void 0 !== q.gid ? parseInt(q.gid, 10) : 0,
-                                            pid: void 0 !== q.rpid ? parseInt(q.rpid, 10) : 0,
-                                            start: void 0 !== q.stl ? parseInt(q.stl, 10) : 0,
-                                            end: void 0 !== q.etl ? parseInt(q.etl, 10) : 0,
-                                            delayTime: s.randomTime(),
-                                            uid: q.sid,
-                                            uname: q.snk
-                                        },
-                                            r.start = 1e3 * r.start,
-                                            r.end = 1e3 * r.end,
-                                            r.timeout = r.end,
+                                        if (r = {
+                                                TYPE: j.nodeType.peck,
+                                                createTime: (new Date).getTime(),
+                                                gid: void 0 !== q.gid ? parseInt(q.gid, 10) : 0,
+                                                pid: void 0 !== q.rpid ? parseInt(q.rpid, 10) : 0,
+                                                start: void 0 !== q.stl ? parseInt(q.stl, 10) : 0,
+                                                end: void 0 !== q.etl ? parseInt(q.etl, 10) : 0,
+                                                delayTime: s.randomTime(),
+                                                uid: q.sid,
+                                                uname: q.snk
+                                            },
+                                                r.start = 1e3 * r.start,
+                                                r.end = 1e3 * r.end,
+                                                r.timeout = r.end,
+                                                d[r.gid]) {
                                             r.gci = d[r.gid].gift_icon ? d[r.gid].gift_icon : $SYS.web_url + "app/douyu/res/page/room-normal/gift/peck-close.png?v=20160322",
-                                            r.goi = d[r.gid].gift_open_icon ? d[r.gid].gift_open_icon : $SYS.web_url + "app/douyu/res/page/room-normal/gift/peck-open.gif?v=20160322",
-                                            i.push(r),
-                                        o > 0 && (i[o].timeout = i[o].timeout + i[o - 1].delayTime)
+                                                r.goi = d[r.gid].gift_open_icon ? d[r.gid].gift_open_icon : $SYS.web_url + "app/douyu/res/page/room-normal/gift/peck-open.gif?v=20160322",
+                                                i.push(r);
+                                            var t = i.length - 1;
+                                            t > 0 && (i[t].timeout += i[t - 1].delayTime)
+                                        }
                                     }
                                 i.sort(function (a, b) {
                                     return a.start > b.start ? 1 : -1
@@ -11863,39 +11927,39 @@ ZeroClipboard.Client.prototype = {
                                     s.add(i)
                             }
                             if ("" !== h.glist)
-                                for (var t = h.glist.split("/|/"), u = t.length, v = 0; u > v; v++)
-                                    if ("" != t[v]) {
-                                        var w = f.decode(t[v]).too()
-                                            , x = {};
-                                        x = {
+                                for (var u = h.glist.split("/|/"), v = u.length, w = 0; v > w; w++)
+                                    if ("" != u[w]) {
+                                        var x = f.decode(u[w]).too()
+                                            , y = {};
+                                        y = {
                                             TYPE: j.nodeType.gift,
-                                            type: parseInt(w.gid, 10),
+                                            type: parseInt(x.gid, 10),
                                             createTime: (new Date).getTime(),
                                             viewc: {
-                                                count: w.hs ? parseInt(w.hs, 10) : 0,
-                                                name: w.snk,
-                                                style: w.gs ? parseInt(w.gs, 10) : 0,
-                                                st: 1e3 * w.ctc,
+                                                count: x.hs ? parseInt(x.hs, 10) : 0,
+                                                name: x.snk,
+                                                style: x.gs ? parseInt(x.gs, 10) : 0,
+                                                st: 1e3 * x.ctc,
                                                 ts: 1
                                             }
                                         },
-                                        1 === d[x.type].is_stay && p.add(x)
+                                        1 === d[y.type].is_stay && p.add(y)
                                     }
                         }
                         if ("ggbr" === h.type) {
-                            var y = s.target()
-                                , z = a('<div class="peck-back-tip"></div>')
-                                , A = a("#right_col_peck").position();
-                            y.append(z),
-                                h.sl > 0 ? (z.addClass("peck-back-success").html('<p><span>恭喜您，领取了</span><strong title="' + h.snk + '">' + h.snk + "</strong></p><p><span>派送的</span><strong>" + h.sl + "个鱼丸</strong><span>~</span></p>"),
+                            var z = s.target()
+                                , A = a('<div class="peck-back-tip"></div>')
+                                , B = a("#right_col_peck").position();
+                            z.append(A),
+                                h.sl > 0 ? (A.addClass("peck-back-success").html('<p><span>恭喜您，领取了</span><strong title="' + h.snk + '">' + h.snk + "</strong></p><p><span>派送的</span><strong>" + h.sl + "个鱼丸</strong><span>~</span></p>"),
                                     b.trigger("mod.userinfo.change", {
                                         current: {
                                             silver: h.sb
                                         }
-                                    })) : z.addClass("peck-back-error").html("<p><span>" + (s.isGet() ? "宝箱已被洗劫一空T_T" : "运气不佳，您没有领到宝箱礼物") + "</span></p>"),
-                                z.css({
-                                    top: A.top - z.height() - 10,
-                                    "margin-left": -(z.width() / 2)
+                                    })) : A.addClass("peck-back-error").html("<p><span>" + (s.isGet() ? "宝箱已被洗劫一空T_T" : "运气不佳，您没有领到宝箱礼物") + "</span></p>"),
+                                A.css({
+                                    top: B.top - A.height() - 10,
+                                    "margin-left": -(A.width() / 2)
                                 }).fadeIn(400, function () {
                                     s.save(h.rpid);
                                     var a;
@@ -11904,12 +11968,12 @@ ZeroClipboard.Client.prototype = {
                                     }),
                                     a && l.destroy(a, !0)
                                 }).delay(3e3).fadeOut(400, function () {
-                                    z.remove()
+                                    A.remove()
                                 }),
                                 a(window).resize(function () {
-                                    z.css({
-                                        top: A.top - z.height() - 10,
-                                        "margin-left": -(z.width() / 2)
+                                    A.css({
+                                        top: B.top - A.height() - 10,
+                                        "margin-left": -(A.width() / 2)
                                     })
                                 })
                         }
@@ -12245,26 +12309,27 @@ ZeroClipboard.Client.prototype = {
             g.superBarrage.RENDER = null ,
             g.barrage = function (a) {
                 var i, j, k, l = a, m = b.fire("mod.chat.blackList.get", parseInt(l.uid, 10));
-                return -1 === m.index && h.roomLinkCheck(l.txt) ? (l.txt = h.htmlEncode(l.txt),
-                    l.txt = h.replaceFace(l.txt),
-                    l.txt = l.txt.replace(/\[room\=([a-zA-Z\d]+)\]/gi, '<a href="/$1" target="_blank" class="cont-room"><img src="' + f.get("sys.web_url") + 'app/douyu/res/page/room-normal/link.png?v=20160310" />$1</a>'),
-                    a.cqt = h.getUserCqName(a.dlv) || "",
-                    a.bgt = Math.pow(10, a.gt),
-                    a.color = h.getColor(a.col - 1) || "",
-                    l.ut = d.isArray(a.ut) ? d.decode(a.ut) : [{
-                        value: a.ut
-                    }],
-                    l.fishshowArr = h.processFishshowData(l.ut),
-                    l.highLevel = 60,
-                    g.barrage.RENDER ? j = g.barrage.RENDER : (i = c.string.join("<% if ( node.isSender ) { %>", '<li class="jschartli chartli" data-type="list">', "<% if ( node.dlv > 0 && node.dc > 0 ) { %>", '<p class="my-cont cqback">', "<% } else { %>", '<p class="my-cont">', "<% } %>", "<% } else { %>", '<li class="jschartli" data-type="list">', "<% if ( node.dlv > 0 && node.dc > 0 ) { %>", '<p class="text-cont cqback">', "<% } else { %>", '<p class="text-cont">', "<% } %>", "<% } %>", "<% if ( node.ct === 1 || node.ct === 2 ) { %>", '<span class="f-phone"><a href="/client" target="_blank" title="【来自于斗鱼移动端】"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/mobile.png?v=<%= attr.web_ver %>" /></a></span>', "<% } %>", "<% if ( node.pg === 5 || node.pg === 2 ) { %>", '<span class="chat-icon-pad"><img class="icon-role" src="<%= attr.web_url %>app/douyu/res/page/room-normal/super_admin.gif?v=<%= attr.web_ver %>" /></span>', "<% } else if ( node.rg === 4 ) { %>", '<span class="chat-icon-pad"><img class="icon-role" src="<%= attr.web_url %>app/douyu/res/page/room-normal/roomadmin.gif?v=<%= attr.web_ver %>" /></span>', "<% } else if ( node.rg === 5 ) { %>", '<span class="chat-icon-pad"><img class="icon-role" src="<%= attr.web_url %>app/douyu/res/page/room-normal/anchor.gif?v=<%= attr.web_ver %>" /></span>', "<%} %>", "<% for(var i=0;i<node.fishshowArr.length;i++){ %>", "<% if(node.fishshowArr[i]&&node.fishshowArr[i].gt&&node.fishshowArr[i].gn){ %>", '<img class="week_gift_img"  title="鱼秀专区周星奖励，获得最多的<%= node.fishshowArr[i].gn %>。图标有效期7天。"  src="<%= node.fishshowArr[i].medal_icon %>">', "<% } %>", "<% } %>", "<% if ( node.dlv > 0 && node.dc > 0) { %>", '<span class="chat-icon-pad cq-level c-lv<%= node.dlv %>" title="<%= node.cqt %>"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/cq_no0<%= node.dlv %>.png?v=<%= attr.web_ver %>" /><em>×<%= node.dc %></em></span>', "<% } else if ( node.bdlv > 0 ) { %>", '<img src="<%= attr.web_url %>app/douyu/res/page/room-normal/cq_other.png?v=<%= attr.web_ver %>" class="chat-icon-pad cq-other" title="酬勤用户"/>', "<% } %>", "<% if ( node.gt > 0 && node.gt < 4 ) { %>", '<span class="chat-icon-pad user-honor"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/user_honor/honor<%= node.gt %>.png?v=<%= attr.web_ver %>" title="一天内在当前房间赠送礼物达到<%= node.bgt %>鱼翅" /></span>', "<% } %>", "<% if ( node.level >= 20 ) { %>", '<a class="chat-icon-pad user-level">', '<img src="<%= attr.web_url %>app/douyu/res/page/room-normal/level/LV', "<% if (node.level < (node.highLevel+1)) { %>", "<%= node.level %>", "<% } else { %>", "<%= node.highLevel %>", "<% } %>", "<% if (node.level >= 40) { %>", ".gif", "<% } else { %>", ".png", "<% } %>", '?v=<%= attr.web_ver %>" title="用户等级：<%= node.level %>" />', "</a>", "<% } %>", '<span class="name"><a href="javascript:;" class="nick js-nick" rel="<%= node.uid %>" gid="<%= node.pg %>"><%= node.nn %>：</a></span>', '<span class="<% if ( node.isSender ) { %>', "m", "<% } else { %>", "text-cont", '<% } %>" chatid="<% if ( node.pg < 5 ) { %>', "<%= node.cid %>", '<% } %>" <% if ( node.col >= 1 && node.col <= 6) { %>', 'style="color:<%= node.color %>"', "<% } %>>", "<%=# node.txt %>", "</span>", '<% if (node.shark === "hjs") { %>', '<a href="/cms/zt/mayday.html" target="_blank">', '<img src="<%= attr.web_url %>app/douyu/activity/res/mayday/pc/shark-hjs.gif?v=<%= attr.web_ver %>"', ' title="狠角色宝宝专享特权：直播间进入提示，免费\n专享彩色弹幕，限量狠角色宝宝30天出入跟随" />', "</a>", "<% } %>", "</p>", "</li>"),
-                        j = g.barrage.RENDER = e.compile(i)),
-                    k = j({
-                        node: l,
-                        attr: {
-                            web_url: f.get("sys.web_url"),
-                            web_ver: "20160310"
-                        }
-                    })) : void 0
+                if (-1 === m.index && h.roomLinkCheck(l.txt))
+                    return l.txt = h.htmlEncode(l.txt),
+                        l.txt = h.replaceFace(l.txt),
+                        l.txt = l.txt.replace(/\[room\=([a-zA-Z\d]+)\]/gi, '<a href="/$1" target="_blank" class="cont-room"><img src="' + f.get("sys.web_url") + 'app/douyu/res/page/room-normal/link.png?v=20160310" />$1</a>'),
+                        a.cqt = h.getUserCqName(a.dlv) || "",
+                        a.bgt = Math.pow(10, a.gt),
+                        a.color = h.getColor(a.col - 1) || "",
+                        l.ut = d.isArray(a.ut) ? d.decode(a.ut) : [{
+                            value: a.ut
+                        }],
+                        l.fishshowArr = h.processFishshowData(l.ut),
+                        l.highLevel = 60,
+                        g.barrage.RENDER ? j = g.barrage.RENDER : (i = c.string.join("<% if ( node.isSender ) { %>", '<li class="jschartli chartli" data-type="list">', "<% if ( node.dlv > 0 && node.dc > 0 ) { %>", '<p class="my-cont cqback">', "<% } else { %>", '<p class="my-cont">', "<% } %>", "<% } else { %>", '<li class="jschartli" data-type="list">', "<% if ( node.dlv > 0 && node.dc > 0 ) { %>", '<p class="text-cont cqback">', "<% } else { %>", '<p class="text-cont">', "<% } %>", "<% } %>", "<% if ( node.ct === 1 || node.ct === 2 ) { %>", '<span class="f-phone"><a href="/client" target="_blank" title="【来自于斗鱼移动端】"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/mobile.png?v=<%= attr.web_ver %>" /></a></span>', "<% } %>", "<% if ( node.pg === 5 || node.pg === 2 ) { %>", '<span class="chat-icon-pad"><img class="icon-role" src="<%= attr.web_url %>app/douyu/res/page/room-normal/super_admin.gif?v=<%= attr.web_ver %>" /></span>', "<% } else if ( node.rg === 4 ) { %>", '<span class="chat-icon-pad"><img class="icon-role" src="<%= attr.web_url %>app/douyu/res/page/room-normal/roomadmin.gif?v=<%= attr.web_ver %>" /></span>', "<% } else if ( node.rg === 5 ) { %>", '<span class="chat-icon-pad"><img class="icon-role" src="<%= attr.web_url %>app/douyu/res/page/room-normal/anchor.gif?v=<%= attr.web_ver %>" /></span>', "<%} %>", "<% for(var i=0;i<node.fishshowArr.length;i++){ %>", "<% if(node.fishshowArr[i]&&node.fishshowArr[i].gt&&node.fishshowArr[i].gn){ %>", '<img class="week_gift_img"  title="鱼秀专区周星奖励，获得最多的<%= node.fishshowArr[i].gn %>。图标有效期7天。"  src="<%= node.fishshowArr[i].medal_icon %>">', "<% } %>", "<% } %>", "<% if ( node.dlv > 0 && node.dc > 0) { %>", '<span class="chat-icon-pad cq-level c-lv<%= node.dlv %>" title="<%= node.cqt %>"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/cq_no0<%= node.dlv %>.png?v=<%= attr.web_ver %>" /><em>×<%= node.dc %></em></span>', "<% } else if ( node.bdlv > 0 ) { %>", '<img src="<%= attr.web_url %>app/douyu/res/page/room-normal/cq_other.png?v=<%= attr.web_ver %>" class="chat-icon-pad cq-other" title="酬勤用户"/>', "<% } %>", "<% if ( node.gt > 0 && node.gt < 4 ) { %>", '<span class="chat-icon-pad user-honor"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/user_honor/honor<%= node.gt %>.png?v=<%= attr.web_ver %>" title="一天内在当前房间赠送礼物达到<%= node.bgt %>鱼翅" /></span>', "<% } %>", "<% if ( node.level > 0 ) { %>", '<a class="chat-icon-pad user-level<% if ( node.level < 10 ) { %> lve-icon-1to9 <% } %>">', '<img src="<%= attr.web_url %>app/douyu/res/page/room-normal/level/LV', "<% if (node.level < (node.highLevel+1)) { %>", "<%= node.level %>", "<% } else { %>", "<%= node.highLevel %>", "<% } %>", "<% if (node.level >= 40) { %>", ".gif", "<% } else { %>", ".png", "<% } %>", '?v=<%= attr.web_ver %>" title="用户等级：<%= node.level %>" />', "</a>", "<% } %>", '<span class="name"><a href="javascript:;" class="nick js-nick" clt="<%= node.ct %>" rel="<%= node.uid %>" gid="<%= node.pg %>"><%= node.nn %>：</a></span>', '<span class="<% if ( node.isSender ) { %>', "m", "<% } else { %>", "text-cont", '<% } %>" chatid="<% if ( node.pg < 5 ) { %>', "<%= node.cid %>", '<% } %>" <% if ( node.col >= 1 && node.col <= 6) { %>', 'style="color:<%= node.color %>"', "<% } %>>", "<%=# node.txt %>", "</span>", '<% if (node.shark === "hjs") { %>', '<a href="/cms/zt/mayday.html" target="_blank">', '<img src="<%= attr.web_url %>app/douyu/activity/res/mayday/pc/shark-hjs.gif?v=<%= attr.web_ver %>"', ' title="狠角色宝宝专享特权：直播间进入提示，免费\n专享彩色弹幕，限量狠角色宝宝30天出入跟随" />', "</a>", "<% } %>", "</p>", "</li>"),
+                            j = g.barrage.RENDER = e.compile(i)),
+                        k = j({
+                            node: l,
+                            attr: {
+                                web_url: f.get("sys.web_url"),
+                                web_ver: "20160310"
+                            }
+                        })
             }
             ,
             g.barrage.RENDER = null ,
@@ -12278,7 +12343,7 @@ ZeroClipboard.Client.prototype = {
                     }],
                     k.fishshowArr = h.processFishshowData(k.ut),
                     k.highLevel = 60,
-                    g.userEnter.RENDER ? i = g.userEnter.RENDER : (b = c.string.join('<li class="jschartli" data-type="list">', '<p class="text-cont">', "<% if (node.lev >= 2) { %>", "<% if (node.lev >= (node.highLevel/10)) { %>", '<span class="user-level-wel"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/w_lv<%= node.highLevel %>.png?v=<%= attr.web_ver %>"></span>', "<% } else { %>", '<span class="user-level-wel"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/w_lv<%= node.lev %>0.png?v=<%= attr.web_ver %>"></span>', "<% } %>", "<% } %>", '<span class="c-wel">欢迎</span>', "<% for(var i=0;i<node.fishshowArr.length;i++){ %>", "<% if(node.fishshowArr[i]&&node.fishshowArr[i].gt&&node.fishshowArr[i].gn){ %>", '<img class="week_gift_img"  title="鱼秀专区周星奖励，获得最多的<%= node.fishshowArr[i].gn %>。图标有效期7天。"  src="<%= node.fishshowArr[i].medal_icon %>">', "<% } %>", "<% } %>", "<% if (node.dlv > 0 && node.dc > 0) { %>", '<span class="chat-icon-pad cq-level c-lv<%= node.dlv %>" title="<%= node.cqt %>"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/cq_no0<%= node.dlv %>.png?v=<%= attr.web_ver %>" /><em>×<%= node.dc %></em></span>', "<% } else if (node.bdlv > 0) { %>", '<img src="<%= attr.web_url %>app/douyu/res/page/room-normal/cq_other.png?v=<%= node.web_ver %>" class="chat-icon-pad cq-other" title="酬勤用户"/>', "<% } %>", "<% if (node.gt > 0 && node.gt < 4) { %>", '<span class="chat-icon-pad user-honor"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/user_honor/honor<%= node.gt %>.png?v=<%= attr.web_ver %>" title="一天内在当前房间赠送礼物达到<%= node.bgt %>鱼翅" /></span>', "<% } %>", "<% if (node.level >= 20) { %>", '<a class="chat-icon-pad user-level"><img src="<%= node.uli %>" title="用户等级：<%= node.level %>" />', "</a>", "<% } %>", '<a href="javascript:;" class="hy-name js-nick" rel="<%= node.uid %>" gid="<%= node.pg %>"><%= node.nn %></a>', "<span>来到本直播间</span>", "</p>", "</li>"),
+                    g.userEnter.RENDER ? i = g.userEnter.RENDER : (b = c.string.join('<li class="jschartli" data-type="list">', '<p class="text-cont">', "<% if (node.lev >= 2) { %>", "<% if (node.lev >= (node.highLevel/10)) { %>", '<span class="user-level-wel"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/w_lv<%= node.highLevel %>.png?v=<%= attr.web_ver %>"></span>', "<% } else { %>", '<span class="user-level-wel"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/w_lv<%= node.lev %>0.png?v=<%= attr.web_ver %>"></span>', "<% } %>", "<% } %>", '<span class="c-wel">欢迎</span>', "<% for(var i=0;i<node.fishshowArr.length;i++){ %>", "<% if(node.fishshowArr[i]&&node.fishshowArr[i].gt&&node.fishshowArr[i].gn){ %>", '<img class="week_gift_img"  title="鱼秀专区周星奖励，获得最多的<%= node.fishshowArr[i].gn %>。图标有效期7天。"  src="<%= node.fishshowArr[i].medal_icon %>">', "<% } %>", "<% } %>", "<% if (node.dlv > 0 && node.dc > 0) { %>", '<span class="chat-icon-pad cq-level c-lv<%= node.dlv %>" title="<%= node.cqt %>"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/cq_no0<%= node.dlv %>.png?v=<%= attr.web_ver %>" /><em>×<%= node.dc %></em></span>', "<% } else if (node.bdlv > 0) { %>", '<img src="<%= attr.web_url %>app/douyu/res/page/room-normal/cq_other.png?v=<%= node.web_ver %>" class="chat-icon-pad cq-other" title="酬勤用户"/>', "<% } %>", "<% if (node.gt > 0 && node.gt < 4) { %>", '<span class="chat-icon-pad user-honor"><img src="<%= attr.web_url %>app/douyu/res/page/room-normal/user_honor/honor<%= node.gt %>.png?v=<%= attr.web_ver %>" title="一天内在当前房间赠送礼物达到<%= node.bgt %>鱼翅" /></span>', "<% } %>", "<% if ( node.level > 0 ) { %>", '<a class="chat-icon-pad user-level<% if ( node.level < 10 ) { %> lve-icon-1to9 <% } %>><img src="<%= node.uli %>" title="用户等级：<%= node.level %>" />', "</a>", "<% } %>", '<a href="javascript:;" class="hy-name js-nick" rel="<%= node.uid %>" gid="<%= node.pg %>"><%= node.nn %></a>', "<span>来到本直播间</span>", "</p>", "</li>"),
                         i = g.userEnter.RENDER = e.compile(b)),
                     j = i({
                         node: k,
@@ -12343,7 +12408,7 @@ ZeroClipboard.Client.prototype = {
             g.chouqin = function (a) {
                 a = d.decode(a).too();
                 var b, f, i, j = d.decode(a.sui).too(), k = j.level, l = a.lev;
-                return g.chouqin.RENDER ? f = g.chouqin.RENDER : (b = c.string.join('<li class="jschartli" data-type="list">', '<a class="chat-icon-pad user-level<%=ulevIn1t9 ? " lve-icon-1to9" : ""%>">', '<img src="<%=userIcon%>" title="用户等级：<%=userLev%>"/>', "</a>", '<a href="#" class="nick js-nick" rel="<%=userId%>"><%=userNick%></a>', "赠送了<%=cqName%>", '<img src="<%=cqLevIcon%>">', "<span>获得了本房间</span>", '<span class="s-cq">', '<img src="<%=cqTitIcon%>">', "</span>", "<span>头衔30天</span>", "</li>"),
+                return g.chouqin.RENDER ? f = g.chouqin.RENDER : (b = c.string.join('<li class="jschartli" data-type="list">', "<% if ( userLev > 0 ) { %>", '<a class="chat-icon-pad user-level<%=ulevIn1t9 ? " lve-icon-1to9" : ""%>">', '<img src="<%=userIcon%>" title="用户等级：<%=userLev%>"/>', "</a>", "<% } %>", '<a href="javascript:;" class="nick js-nick" rel="<%=userId%>"><%=userNick%></a>', "赠送了<%=cqName%>", '<img src="<%=cqLevIcon%>">', "<span>获得了本房间</span>", '<span class="s-cq">', '<img src="<%=cqTitIcon%>">', "</span>", "<span>头衔30天</span>", "</li>"),
                     f = g.chouqin.RENDER = e.compile(b)),
                     i = f({
                         ulevIn1t9: k >= 1 && 9 >= k,
@@ -12368,9 +12433,10 @@ ZeroClipboard.Client.prototype = {
                     5: 55,
                     6: 60
                 }, m = b[a.gfid];
-                return g.gift1.RENDER ? j = g.gift1.RENDER : (i = c.string.join('<li class="jschartli" data-type="list">', '<p class="text_cont">', "<% if (cqLev > 0 && userCnt > 0) { %>", '<span class="chat-icon-pad cq-level c-lv<%=cqLev%>" title="<%=cqName%>">', '<img src="<%=cqTitIcon%>">', "<em>×<%=userCnt%></em>", "</span>", "<% } else  {%>", "<% if (userBdl > 0) { %>", '<img src="<%=attr.web_url%>app/douyu/res/page/room-show/cq/cq_other.png?v=20160322" class="chat-icon-pad cq-other" title="酬勤用户">', "<% } %>", "<% } %>", '<a class="chat-icon-pad user-level<%=ulevIn1t9 ? " lve-icon-1to9" : ""%>">', '<img src="<%=userIcon%>" title="用户等级：<%=userLev%>">', "</a>", '<a href="#" class="nick js-nick" rel="<%=sid%>" gid="<%=spg%>"><%=srcNcnm%></a>', "<span>赠送给主播</span>", "<% if (giftType == 1) { %>", "<span><%=giftCount%>个鱼丸</span>", "<% } %>", '<img class="lw-imgs" src="<%=giftCImg%>" width="<%=giftWidth%>" height="<%=giftHeight%>">', "<% if (hits > 1) { %>", "<span><%=hits%>连击</span>", "<% } %>", "</p>", "</li>"),
+                return g.gift1.RENDER ? j = g.gift1.RENDER : (i = c.string.join('<li class="jschartli" data-type="list">', '<p class="text_cont">', "<% if (cqLev > 0 && userCnt > 0) { %>", '<span class="chat-icon-pad cq-level c-lv<%=cqLev%>" title="<%=cqName%>">', '<img src="<%=cqTitIcon%>">', "<em>×<%=userCnt%></em>", "</span>", "<% } else  {%>", "<% if (userBdl > 0) { %>", '<img src="<%=attr.web_url%>app/douyu/res/page/room-show/cq/cq_other.png?v=20160322" class="chat-icon-pad cq-other" title="酬勤用户">', "<% } %>", "<% } %>", "<% if ( userLev > 0 ) { %>", '<a class="chat-icon-pad user-level<%=ulevIn1t9 ? " lve-icon-1to9" : ""%>">', '<img src="<%=userIcon%>" title="用户等级：<%=userLev%>">', "</a>", "<% } %>", '<a href="javascript:;" class="nick js-nick" clt="<%=clt%>" rel="<%=sid%>" gid="<%=spg%>"><%=srcNcnm%></a>', "<span>赠送给主播</span>", "<% if (giftType == 1) { %>", "<span><%=giftCount%>个鱼丸</span>", "<% } %>", '<img class="lw-imgs" src="<%=giftCImg%>" width="<%=giftWidth%>" height="<%=giftHeight%>">', "<% if (hits > 1) { %>", "<span><%=hits%>连击</span>", "<% } %>", "</p>", "</li>"),
                     j = g.gift1.RENDER = e.compile(i)),
                     k = j({
+                        clt: a.ct || 0,
                         cqLev: a.lev,
                         userLev: a.level,
                         userCnt: a.cnt,
@@ -12405,9 +12471,10 @@ ZeroClipboard.Client.prototype = {
                     5: 55,
                     6: 60
                 }, m = b[a.gfid];
-                return g.gift2.RENDER ? j = g.gift2.RENDER : (i = c.string.join('<li class="jschartli" data-type="list">', '<p class="text-cont">', "<% if (dlv > 0 && dc > 0) { %>", '<span class="chat-icon-pad cq-level c-lv<%=dlv%>" title="<%=cqName%>">', '<img src="<%=cqTitIcon%>">', "<em>×<%=dc%></em>", "</span>", "<% } else  {%>", "<% if (bdl > 0) { %>", '<img src="<%=attr.web_url%>app/douyu/res/page/room-show/cq/cq_other.png?v=20160322" class="chat-icon-pad cq-other" title="酬勤用户">', "<% } %>", "<% } %>", '<a class="chat-icon-pad user-level<%=ulevIn1t9 ? " lve-icon-1to9" : ""%>">', '<img src="<%=userIcon%>" title="用户等级：<%=userLev%>">', "</a>", '<a href="#" class="nick js-nick" rel="<%=uid%>" gid="<%=pg%>"><%=nn%></a>', "<span>赠送给主播</span>", "<% if (giftType == 1) { %>", "<span><%=giftCount%>个鱼丸</span>", "<% } %>", '<img class="lw-imgs" src="<%=giftCImg%>" width="<%=giftWidth%>" height="<%=giftHeight%>">', "<% if (hits > 1) { %>", "<span><%=hits%>连击</span>", "<% } %>", "</p>", "</li>"),
+                return g.gift2.RENDER ? j = g.gift2.RENDER : (i = c.string.join('<li class="jschartli" data-type="list">', '<p class="text-cont">', "<% if (dlv > 0 && dc > 0) { %>", '<span class="chat-icon-pad cq-level c-lv<%=dlv%>" title="<%=cqName%>">', '<img src="<%=cqTitIcon%>">', "<em>×<%=dc%></em>", "</span>", "<% } else  {%>", "<% if (bdl > 0) { %>", '<img src="<%=attr.web_url%>app/douyu/res/page/room-show/cq/cq_other.png?v=20160322" class="chat-icon-pad cq-other" title="酬勤用户">', "<% } %>", "<% } %>", "<% if ( userLev > 0 ) { %>", '<a class="chat-icon-pad user-level<%=ulevIn1t9 ? " lve-icon-1to9" : ""%>">', '<img src="<%=userIcon%>" title="用户等级：<%=userLev%>">', "</a>", "<% } %>", '<a href="javascript:;" class="nick js-nick" clt="<%=clt%>" rel="<%=uid%>" gid="<%=pg%>"><%=nn%></a>', "<span>赠送给主播</span>", "<% if (giftType == 1) { %>", "<span><%=giftCount%>个鱼丸</span>", "<% } %>", '<img class="lw-imgs" src="<%=giftCImg%>" width="<%=giftWidth%>" height="<%=giftHeight%>">', "<% if (hits > 1) { %>", "<span><%=hits%>连击</span>", "<% } %>", "</p>", "</li>"),
                     j = g.gift2.RENDER = e.compile(i)),
                     k = j({
+                        clt: a.ct || 0,
                         uid: a.uid,
                         nn: a.nn,
                         dlv: a.dlv || 0,
@@ -12436,7 +12503,7 @@ ZeroClipboard.Client.prototype = {
             g.balls = function (a, b) {
                 a = d.decode(a).too();
                 var i, j, k, l = d.decode(a.sui).too();
-                return g.balls.RENDER ? j = g.balls.RENDER : (i = c.string.join('<li class="jschartli older-balls" data-type="list">', '<p class="text-cont">', "<% if (dlv > 0 && dc > 0) { %>", '<span class="chat-icon-pad cq-level c-lv<%=dlv%>" title="<%=cqName%>">', '<img src="<%=cqTitIcon%>">', "<em>×<%=dc%></em>", "</span>", "<% } else  {%>", "<% if (bdl > 0) { %>", '<img src="<%=attr.web_url%>app/douyu/res/page/room-show/cq/cq_other.png?v=20160322" class="chat-icon-pad cq-other" title="酬勤用户">', "<% } %>", "<% } %>", '<a class="chat-icon-pad user-level<%=ulevIn1t9 ? " lve-icon-1to9" : ""%>">', '<img src="<%=userIcon%>" title="用户等级：<%=userLev%>">', "</a>", '<a href="#" class="nick js-nick" rel="<%=uid%>" gid="<%=pg%>"><%=nn%></a>', "<span>赠送给主播</span>", "<span><%=giftCount%>个鱼丸</span>", '<img class="lw-imgs" src="<%=attr.web_url%>app/douyu/res/page/room-normal/gift/mobile-yw-100.png?v=20160331" />', "</p>", "</li>"),
+                return g.balls.RENDER ? j = g.balls.RENDER : (i = c.string.join('<li class="jschartli older-balls" data-type="list">', '<p class="text-cont">', "<% if (dlv > 0 && dc > 0) { %>", '<span class="chat-icon-pad cq-level c-lv<%=dlv%>" title="<%=cqName%>">', '<img src="<%=cqTitIcon%>">', "<em>×<%=dc%></em>", "</span>", "<% } else  {%>", "<% if (bdl > 0) { %>", '<img src="<%=attr.web_url%>app/douyu/res/page/room-show/cq/cq_other.png?v=20160322" class="chat-icon-pad cq-other" title="酬勤用户">', "<% } %>", "<% } %>", "<% if ( userLev > 0 ) { %>", '<a class="chat-icon-pad user-level<%=ulevIn1t9 ? " lve-icon-1to9" : ""%>">', '<img src="<%=userIcon%>" title="用户等级：<%=userLev%>">', "</a>", "<% } %>", '<a href="javascript:;" class="nick js-nick" rel="<%=uid%>" gid="<%=pg%>"><%=nn%></a>', "<span>赠送给主播</span>", "<span><%=giftCount%>个鱼丸</span>", '<img class="lw-imgs" src="<%=attr.web_url%>app/douyu/res/page/room-normal/gift/mobile-yw-100.png?v=20160331" />', "</p>", "</li>"),
                     j = g.balls.RENDER = e.compile(i)),
                     k = j({
                         uid: l.id,
@@ -12509,7 +12576,7 @@ ZeroClipboard.Client.prototype = {
                         attr: {
                             web_url: f.get("sys.web_url")
                         }
-                    })) : 0 == n && k > 0 && m > 1 ? (g.luckburst.RENDER2 ? i = g.luckburst.RENDER2 : (b = c.string.join('<li class="jschartli" data-type="list">', "<% if (level >= 10) { %>", '<img class="cj-img" src="<%=attr.web_url%>app/douyu/res/page/room-show/olyw/baoji.png?v=20160322">', '<a class="chat-icon-pad user-level<%=ulevIn1t9 ? " lve-icon-1to9" : ""%>">', '<img src="<%=userIcon%>" title="用户等级：<%=userLev%>">', "</a>", '<span class="nick js-nick"><%=nick%></span>在第<%=lev%>次在线领鱼丸时触发', "<span><%=userRate%>倍暴击</span>，获得了", "<span><%=gold%></span>个鱼丸", '<img src="<%=attr.web_url%>app/douyu/res/page/room-show/olyw/yw.png?1">', "<% } else { %>", '<img class="cj-img" src="<%=attr.web_url%>app/douyu/res/page/room-show/olyw/lw-pc-img.png?v=20160322">', '<span class="nick js-nick"><%=nick%></span>', "在第<%=lev%>次在线领鱼丸时获得了<%=gold%>个鱼丸", '<img src="<%=attr.web_url%>app/douyu/res/page/room-show/olyw/yw.png?v=20160322">', "<% } %>", "</li>"),
+                    })) : 0 == n && k > 0 && m > 1 ? (g.luckburst.RENDER2 ? i = g.luckburst.RENDER2 : (b = c.string.join('<li class="jschartli" data-type="list">', "<% if (level >= 10) { %>", '<img class="cj-img" src="<%=attr.web_url%>app/douyu/res/page/room-show/olyw/baoji.png?v=20160322">', "<% if ( userLev > 0 ) { %>", '<a class="chat-icon-pad user-level<%=ulevIn1t9 ? " lve-icon-1to9" : ""%>">', '<img src="<%=userIcon%>" title="用户等级：<%=userLev%>">', "</a>", "<% } %>", '<span class="nick js-nick"><%=nick%></span>在第<%=lev%>次在线领鱼丸时触发', "<span><%=userRate%>倍暴击</span>，获得了", "<span><%=gold%></span>个鱼丸", '<img src="<%=attr.web_url%>app/douyu/res/page/room-show/olyw/yw.png?1">', "<% } else { %>", '<img class="cj-img" src="<%=attr.web_url%>app/douyu/res/page/room-show/olyw/lw-pc-img.png?v=20160322">', '<span class="nick js-nick"><%=nick%></span>', "在第<%=lev%>次在线领鱼丸时获得了<%=gold%>个鱼丸", '<img src="<%=attr.web_url%>app/douyu/res/page/room-show/olyw/yw.png?v=20160322">', "<% } %>", "</li>"),
                     i = g.luckburst.RENDER2 = e.compile(b)),
                     j = i({
                         gold: l,
@@ -12540,13 +12607,14 @@ ZeroClipboard.Client.prototype = {
             g.peck = function (a) {
                 a = d.decode(a).too();
                 var b, h, i;
-                return g.peck.RENDER ? h = g.peck.RENDER : (b = c.string.join('<li class="jschartli" data-type="list">', '<p class="text-cont">', '<img class="cj-img" src="<%=attr.web_url%>app/douyu/res/page/room-show/gift/msg-ywol.png?v=20160322" />', '<a href="javascript:;" class="nick" style="cursor:text;" rel="<%=did%>"><%=dnk%></a>', "<span> 领取了 </span>", '<span class="hy-org"><%=snk%></span>', "<span> 派送的 </span>", '<span class="hy-org"><%=sl%></span>', "<span>个鱼丸</span>", "</p>", "</li>"),
+                return g.peck.RENDER ? h = g.peck.RENDER : (b = c.string.join('<li class="jschartli" data-type="list">', '<p class="text-cont">', '<% if (rpt ==  "3") { %>', '<img class="cj-img" src="<%=attr.web_url%>app/douyu/res/page/room-show/gift/msg-ywol.png?v=20160322" />', '<a href="javascript:;" class="nick" style="cursor:text;" rel="<%=did%>"><%=dnk%></a>', "<span> 红包拆出了 </span>", '<span class="hy-org"><%=sl%></span>', "<span>个鱼丸</span>", "<% } else { %>", '<img class="cj-img" src="<%=attr.web_url%>app/douyu/res/page/room-show/gift/msg-ywol.png?v=20160322" />', '<a href="javascript:;" class="nick" style="cursor:text;" rel="<%=did%>"><%=dnk%></a>', "<span> 领取了 </span>", '<span class="hy-org"><%=snk%></span>', "<span> 派送的 </span>", '<span class="hy-org"><%=sl%></span>', "<span>个鱼丸</span>", "<% } %>", "</p>", "</li>"),
                     h = g.peck.RENDER = e.compile(b)),
                     i = h({
                         did: a.did,
                         dnk: a.dnk,
                         snk: a.snk,
                         sl: a.sl,
+                        rpt: a.rpt,
                         attr: {
                             web_url: f.get("sys.web_url")
                         }
@@ -12557,8 +12625,8 @@ ZeroClipboard.Client.prototype = {
             g.uplevel = function (a) {
                 a = d.decode(a).too();
                 var i, j, k, l = a.level;
-                return parseInt(l / 10),
-                $SYS.uid == a.uid && b.trigger("mod.chatrank.cqrankupdate", l),
+                parseInt(l / 10);
+                return $SYS.uid == a.uid && b.trigger("mod.chatrank.cqrankupdate", l),
                     10 == l || 20 == l || 30 == l || 40 == l || 50 == l || 60 == l ? (g.uplevel.RENDER ? j = g.uplevel.RENDER : (i = c.string.join('<li class="jschartli" data-type="list">', '<p class="text_cont">', "<% if (level >= 10) { %>", '<span class="user_level_wel"><img src="<%=attr.web_url%>app/douyu/res/page/room-normal/w_grow_lv<%= level %>.png?v=20160428" style="padding-left:0;" /></span>', "<% } %>", '<span style="margin-right:8px;">恭喜</span>', '<a class="chat-icon-pad user_level  <%=ulevIn1t9 ? " lve-icon-1to9" : ""%>">', '<img src="<%= userIcon %>" title="用户等级：<%= level %>" style="vertical-align:middle;"/>', "</a>", '<span class="name"><a href="javascript:;" class="nick js-nick" rel="<%= uid %>" gid="<%= gid %>"><%= user_nick %></a></span>', '升级到<span style="color:rgb(230,0,18);margin:0 2px;"><%= level %></span>级!', "</p>", "</li>"),
                         j = g.uplevel.RENDER = e.compile(i)),
                         k = j({
@@ -13231,7 +13299,8 @@ ZeroClipboard.Client.prototype = {
             rank_def_height: {
                 week: 115,
                 all: 115
-            }
+            },
+            MaxListNum: 10
         }, k = b({
             init: function (b) {
                 this.config = a.extend(!0, {}, {
@@ -13264,7 +13333,7 @@ ZeroClipboard.Client.prototype = {
             rankListForMat: function (a) {
                 for (var b = 0; b < a.length; b++) {
                     var c = parseInt(a[b].lrk);
-                    c >= 1 && 10 >= c ? a[b].lrkTitle = "之前排名第" + c + "位" : a[b].lrkTitle = "之前未上榜"
+                    c >= 1 && c <= j.MaxListNum ? a[b].lrkTitle = "之前排名第" + c + "位" : a[b].lrkTitle = "之前未上榜"
                 }
                 return a
             },
@@ -13396,10 +13465,12 @@ ZeroClipboard.Client.prototype = {
             b && (b = e.isArray(b) ? e.decode(b) : [{
                 value: b
             }],
+            b.length > j.MaxListNum && (b = b.slice(0, j.MaxListNum)),
                 i.resetWeekRank(b)),
             c && (c = e.isArray(c) ? e.decode(c) : [{
                 value: c
             }],
+            c.length > j.MaxListNum && (c = c.slice(0, j.MaxListNum)),
                 i.resetAllRank(c)),
                 i.showRankIf()
         }),
@@ -13574,7 +13645,7 @@ ZeroClipboard.Client.prototype = {
                         d = 1) : a.length >= 10 ? (c = "屏蔽人数已满",
                         d = 3) : (c = "屏蔽该用户",
                         d = 0),
-                        h.$shield.html('<i class="icon pb-icon"></i>' + c).attr("rel", d),
+                        h.$shield.show().html('<i class="icon pb-icon"></i>' + c).attr("rel", d),
                     5 == g.ugp.rg || 5 == g.ugd && g.rgp.rg < 5) {
                     var e = 4 == g.rgp.rg ? 1 : 4
                         , f = 4 == g.rgp.rg ? "解除管理员" : "任命管理员";
@@ -13596,17 +13667,22 @@ ZeroClipboard.Client.prototype = {
                     j.stopEvt(c);
                     var d = a(this)
                         , e = d.offset();
-                    g.rel = parseInt(d.attr("rel"), 10),
+                    return g.clt = parseInt(d.attr("clt"), 10) || 0,
+                        g.rel = parseInt(d.attr("rel"), 10),
                         g.gid = parseInt(d.attr("gid"), 10),
                         g.cid = d.parent().next().attr("chatid"),
                         g.rgp = b.fire("mod.center.usergroup.get", g.rel),
                         g.una = d.text(),
-                    g.uid && 2 != g.gid && g.uid != g.rel && (g.ugp || (g.ugp = b.fire("mod.center.usergroup.get", g.uid)),
-                        h.showManager(),
-                        h.$userManager.show().css({
-                            top: e.top - h.$userManager.outerHeight(!0),
-                            left: e.left
-                        }))
+                        g.uid && 2 != g.gid && g.uid != g.rel ? (g.ugp || (g.ugp = b.fire("mod.center.usergroup.get", g.uid)),
+                            h.showManager(),
+                            9 === g.clt && (h.$report.hide(),
+                                h.$shield.hide(),
+                                h.$appoint.hide(),
+                                h.$closure.hide(),
+                            "none" === h.$mute.css("display")) ? void h.$userManager.hide() : void h.$userManager.show().css({
+                                top: e.top - h.$userManager.outerHeight(!0),
+                                left: e.left
+                            })) : void 0
                 })
             }
             ,
@@ -13638,47 +13714,65 @@ ZeroClipboard.Client.prototype = {
             ,
             k.mute = function () {
                 if (2 == g.ugd || !(g.ugp.rg < 4 && 5 != g.ugd || g.uid == g.rel)) {
+                    "：" == g.una.charAt(g.una.length - 1) && (g.una = g.una.substring(0, g.una.length - 1));
                     var b = ['<div id="blackshow">', '<div class="box_bs">', "<p>请选择要对用户进行的操作</p>", '<div class="box_label fixed">', '<label class="con_label">范围：</label>', '<div class="controls">', '<label class="radio inline"><input type="radio" checked="checked" name="range" value="1">该用户</label>', -1 === g.role.indexOf(4) ? "" : '<label class="radio inline js_login_sa js_login_myroom"><input type="radio" value="2" name="range">该IP段</label>', "</div>", "</div>", '<div class="box_label fixed">', '<label class="con_label">操作：</label>', '<div class="controls">', '<label class="radio inline"><input type="radio" name="blacktype" value="2" checked="checked">禁止发言</label>', "</div>", "</div>", '<div class="box_label">', '<label class="con_label">时长：</label>', '<div class="controls">', '<label class="radio inline"><input type="text" value="99" maxlength="10" id="blacktime" class="input_time">小时</label>', "</div>", "</div>", "</div>", "</div>"].join("");
-                    a.dialog({
-                        title: "用户屏蔽",
-                        content: b,
-                        id: "black900l",
-                        init: function () {
-                            a("#blacktime").focus()
-                        },
-                        ok: function () {
-                            if (!e.check())
-                                return void e.show("reg");
-                            var b = a("#blacktime")
-                                , d = b.val()
-                                , h = a('input[name="blacktype"]:checked').val();
-                            if (isNaN(d) || 0 >= d)
-                                return void a.dialog.tips_black("请重新输入!");
-                            if (2 == a('input[name="range"]:checked').val()) {
-                                if (h = 2 == h ? 4 : 1,
-                                    d > 99)
-                                    return void a.dialog.tips_black("封禁时长不能超过99小时!")
-                            } else if (d > 720)
-                                return void a.dialog.tips_black("封禁时长不能超过720小时!");
-                            d = 3600 * d,
-                                f.exe("js_blackuser", c.encode([{
-                                    name: "type",
-                                    value: "blackreq"
-                                }, {
-                                    name: "userid",
-                                    value: g.rel
-                                }, {
-                                    name: "blacktype",
-                                    value: h
-                                }, {
-                                    name: "limittime",
-                                    value: d
-                                }])),
-                                b.val("99")
-                        },
-                        cancelVal: "关闭",
-                        cancel: !0
-                    })
+                    9 === g.clt && (b = ['<ul class="room-super-menu">', '<li style="text-align: center;"><span>你确定要对</span><strong class="unser-name" style="padding: 0 5px;color: #f60;">' + g.una + "</strong><span>禁言吗？</span></li>", "</ul>"].join("")),
+                        a.dialog({
+                            title: "用户屏蔽",
+                            content: b,
+                            id: "black900l",
+                            init: function () {
+                                a("#blacktime").focus()
+                            },
+                            ok: function () {
+                                if (9 === g.clt)
+                                    f.exe("js_blackuser", c.encode([{
+                                        name: "type",
+                                        value: "aliblackreq"
+                                    }, {
+                                        name: "userid",
+                                        value: g.rel
+                                    }, {
+                                        name: "rid",
+                                        value: d.get("room.room_id")
+                                    }]));
+                                else {
+                                    if (!e.check())
+                                        return void e.show("reg");
+                                    var b = a("#blacktime")
+                                        , h = b.val()
+                                        , i = a('input[name="blacktype"]:checked').val();
+                                    if (isNaN(h) || 0 >= h)
+                                        return void a.dialog.tips_black("请重新输入!");
+                                    if (2 == a('input[name="range"]:checked').val()) {
+                                        if (i = 2 == i ? 4 : 1,
+                                            h > 99)
+                                            return void a.dialog.tips_black("封禁时长不能超过99小时!")
+                                    } else if (h > 720)
+                                        return void a.dialog.tips_black("封禁时长不能超过720小时!");
+                                    h = 3600 * h,
+                                        f.exe("js_blackuser", c.encode([{
+                                            name: "type",
+                                            value: "blackreq"
+                                        }, {
+                                            name: "userid",
+                                            value: g.rel
+                                        }, {
+                                            name: "rid",
+                                            value: d.get("room.room_id")
+                                        }, {
+                                            name: "blacktype",
+                                            value: i
+                                        }, {
+                                            name: "limittime",
+                                            value: h
+                                        }])),
+                                        b.val("99")
+                                }
+                            },
+                            cancelVal: "关闭",
+                            cancel: !0
+                        })
                 }
             }
             ,
@@ -14252,8 +14346,8 @@ ZeroClipboard.Client.prototype = {
                 var b = this
                     , c = this.doms
                     , d = {
-                    url: "/room/my_admin/getCreditByUid",
-                    type: "POST",
+                    url: "/room/superMenuOperate/getCreditByUid",
+                    type: "GET",
                     data: {
                         uid: $ROOM.owner_uid
                     }
@@ -14285,36 +14379,36 @@ ZeroClipboard.Client.prototype = {
         };
         return g
     }),
-    define("douyu/page/room/normal/mod/anchor-like", ["jquery", "shark/util/lang/1.0", "shark/util/template/1.0", "douyu/context"], function (a, b, c, d) {
-        var e = {
+    define("douyu/page/room/normal/mod/anchor-like", ["jquery", "shark/util/lang/1.0", "shark/util/template/1.0", "douyu/context", "douyu/com/insight"], function (a, b, c, d, e) {
+        var f = {
                 url: "/swf_api/getAnchorLike",
                 roomId: d.get("room.room_id"),
                 maxItem: 6,
                 $anchorLike: a("#js-anchor-like"),
                 $slider: a("#js-chat-right-ad")
             }
-            , f = function () {
+            , g = function () {
                 var d = function (d) {
-                        var f, g, h;
-                        return f = b.string.join("<% var _index = 1; %>", "<% for (var key in list) { %>", "<% if ( _index <= maxLength) { %>", "<% var item = list[key]; %>", '<li class="live" data-point-2="<%= _index %>">', '<a href="/<%= key %>" target="_blank" title="<%= item.name %>">', '<div class="live-preview">', '<img src="<%= item.room_src %>" />', '<b class="border"></b>', "</div>", '<div class="live-details">', '<h3 class="live-title"><%= item.name %></h3>', '<p class="live-category">分类：<%= item.game_name %></p>', '<p class="live-anchor">主播：<%= item.nickname %></p>', "</div>", "</a>", "</li>", "<% _index++; %>", "<% } %>", "<% } %>"),
-                            g = c.compile(f),
+                        var e, g, h;
+                        return e = b.string.join("<% var _index = 1; %>", "<% for (var key in list) { %>", "<% if ( _index <= maxLength) { %>", "<% var item = list[key]; %>", '<li class="live" data-point-2="<%= _index %>">', '<a href="/<%= key %>" target="_blank" title="<%= item.name %>">', '<div class="live-preview">', '<img src="<%= item.room_src %>" />', '<b class="border"></b>', "</div>", '<div class="live-details">', '<h3 class="live-title"><%= item.name %></h3>', '<p class="live-category">分类：<%= item.game_name %></p>', '<p class="live-anchor">主播：<%= item.nickname %></p>', "</div>", "</a>", "</li>", "<% _index++; %>", "<% } %>", "<% } %>"),
+                            g = c.compile(e),
                             (h = g({
                                 list: d,
-                                maxLength: e.maxItem
-                            })) ? (e.$anchorLike.show().html(h),
-                                void (window.DYS && (e.$anchorLike.find("li>a").each(function () {
+                                maxLength: f.maxItem
+                            })) ? (f.$anchorLike.show().html(h),
+                                void (window.DYS && (f.$anchorLike.find("li>a").each(function () {
                                     var b = a(this)
                                         , c = b.parent().attr("data-point-2")
-                                        , d = DYS.point.page(1, c)
-                                        , f = {
-                                        f: e.roomId,
+                                        , d = DYS.point.page(8, 1)
+                                        , e = {
+                                        f: f.roomId,
                                         t: b.attr("href").replace(/\//g, ""),
                                         i: c
                                     };
-                                    b.data("extdata", f),
+                                    b.data("extdata", e),
                                         b.data("point", d)
                                 }),
-                                    e.$anchorLike.on("mousedown", "li a", function () {
+                                    f.$anchorLike.on("mousedown", "li a", function () {
                                         var b = a(this)
                                             , c = b.data("point")
                                             , d = b.data("extdata");
@@ -14322,26 +14416,26 @@ ZeroClipboard.Client.prototype = {
                                             point_id: c,
                                             ext: d
                                         })
-                                    })))) : void e.$anchorLike.hide()
+                                    })))) : void f.$anchorLike.hide()
                     }
                     ;
                 a.ajax({
-                    url: e.url,
+                    url: f.url,
                     type: "GET",
                     dataType: "json",
                     data: {
-                        room_id: e.roomId
+                        room_id: f.roomId
                     },
                     success: function (a) {
                         d(a)
                     },
                     error: function () {
-                        e.$anchorLike.hide()
+                        f.$anchorLike.hide()
                     }
                 });
-                var f = function () {
-                        var a = e.$slider.find("ul li")
-                            , c = e.$slider.find("ol li")
+                var g = function () {
+                        var a = f.$slider.find("ul li")
+                            , c = f.$slider.find("ol li")
                             , d = 0;
                         b.interval(function () {
                             a.css("opacity", 0).hide(),
@@ -14353,10 +14447,21 @@ ZeroClipboard.Client.prototype = {
                         }, 5e3)
                     }
                     ;
-                f()
+                g(),
+                    e.build({
+                        selectors: "#js-anchor-like",
+                        appear: function () {
+                            try {
+                                DYS.submit({
+                                    point_id: "5.8.0.0"
+                                })
+                            } catch (a) {
+                            }
+                        }
+                    })
             }
             ;
-        a(f)
+        a(g)
     }),
     define("douyu/page/room/normal/mod/weibo", ["jquery", "shark/observer", "douyu/page/room/base/api", "douyu/com/user", "shark/util/cookie/1.0", "shark/util/flash/data/1.0", "douyu/context", "shark/util/template/2.0"], function (a, b, c, d, e, f, g, h) {
         var i = {};
@@ -14404,7 +14509,8 @@ ZeroClipboard.Client.prototype = {
             , l = (new Date).getTime()
             , m = (String.prototype.toString,
             !1)
-            , n = {
+            , n = null
+            , o = {
             1: {
                 name: "观看时长",
                 cookiename: "plogin",
@@ -14493,13 +14599,13 @@ ZeroClipboard.Client.prototype = {
                 btnid: "wb-sh-hyw-btn"
             }
         }
-            , o = null
-            , p = "share"
-            , q = null
-            , r = {
+            , p = null
+            , q = "share"
+            , r = null
+            , s = {
             init: function () {
                 var c = this;
-                q = a("#js-stats-and-actions"),
+                r = a("#js-stats-and-actions"),
                     b.on("mod.center.userrole.ready", function (a) {
                         if (!m) {
                             m = 1;
@@ -14530,40 +14636,40 @@ ZeroClipboard.Client.prototype = {
                 })
             },
             getCookie: function (a) {
-                return e.get(p + a)
+                return e.get(q + a)
             },
             setCookie: function (a, b, c) {
-                e.set(p + a, b, c)
+                e.set(q + a, b, c)
             },
             triggered: function (a) {
                 var b = this
-                    , c = n[a];
+                    , c = o[a];
                 return g.get("sys.uid") == b.getCookie(c.cookiename)
             },
             loginAction: function (a) {
                 var b = this
                     , c = null
                     , d = 0
-                    , e = (n[a],
+                    , e = (o[a],
                     b.getEvent(a));
-                b.getRestTime(l),
-                    c = setInterval(function () {
-                        d = d ? d : 0,
-                            d++;
-                        var f = parseInt(e.count);
-                        if (isNaN(f) || !f)
-                            return !1;
-                        if (d / 60 % e.count == 0) {
-                            var g = 100 * Math.random();
-                            j > g && (clearInterval(c),
-                                c = null ,
-                                b.render(a))
-                        }
-                    }, 1e3)
+                b.getRestTime(l);
+                c = setInterval(function () {
+                    d = d ? d : 0,
+                        d++;
+                    var f = parseInt(e.count);
+                    if (isNaN(f) || !f)
+                        return !1;
+                    if (d / 60 % e.count == 0) {
+                        var g = 100 * Math.random();
+                        j > g && (clearInterval(c),
+                            c = null ,
+                            b.render(a))
+                    }
+                }, 1e3)
             },
             giftAction: function (a, b) {
                 var c = this
-                    , d = (n[a],
+                    , d = (o[a],
                     c.getEvent(a))
                     , e = parseInt(d.count)
                     , f = parseInt(b.hits)
@@ -14586,13 +14692,13 @@ ZeroClipboard.Client.prototype = {
                     , g = f(e)
                     , i = a(e.wrap);
                 i.html(g),
-                    q.append(i),
+                    r.append(i),
                     d.dp("5.12.1.0"),
                     d.bindEvent(b, i, e)
             },
             bindEvent: function (b, c, d) {
                 var e = this
-                    , f = n[b]
+                    , f = o[b]
                     , h = !1
                     , i = 0;
                 c.on("click.wbshare", ".wbshare-close", function () {
@@ -14618,57 +14724,58 @@ ZeroClipboard.Client.prototype = {
             },
             getModule: function (b, c) {
                 var d = this
-                    , e = n[b]
+                    , e = o[b]
                     , f = d.getEvent(b)
                     , h = null
                     , i = []
                     , j = 0
                     , l = e.style
                     , m = $ROOM.giftBatterConfig
-                    , o = ""
-                    , p = 1
-                    , q = ""
-                    , p = 0
-                    , r = "";
+                    , p = ""
+                    , q = 1
+                    , r = ""
+                    , q = 0
+                    , s = "";
                 if (l)
-                    for (var s in m) {
-                        var t = m[s];
-                        if (t.style == l) {
-                            o = t.name;
+                    for (var t in m) {
+                        var u = m[t];
+                        if (u.style == l) {
+                            p = u.name;
                             break
                         }
                     }
                 else
-                    o = e.name;
+                    p = e.name;
                 if (c)
                     if (c.ur && "" != c.ur)
-                        p = c.sil,
-                            q = f.git_content;
+                        q = c.sil,
+                            r = f.git_content;
                     else {
-                        var u = c.hits ? c.hits : 1;
-                        q = 1 == u ? f.tip_content : f.git_content,
-                            p = u
+                        var v = c.hits ? c.hits : 1;
+                        r = 1 == v ? f.tip_content : f.git_content,
+                            q = v
                     }
                 else
-                    q = f.git_content,
-                        p = f.count;
+                    r = f.git_content,
+                        q = f.count;
                 return h = {
-                    giftName: o,
-                    giftCount: p,
+                    giftName: p,
+                    giftCount: q,
                     roomName: g.get("room.room_name"),
                     anchorName: g.get("room.owner_name"),
                     roomId: g.get("room.room_id"),
                     url: window.location.href
                 },
+                    n = a.extend(null, h),
                     i = f.article,
                     j = i.length ? parseInt(Math.random() * i.length) : 0,
-                    r = d.helperTmpl(i[j], h),
+                    s = d.helperTmpl(i[j], h),
                     a.extend(h, {
                         cq: e.lev,
                         btnid: e.btnid,
-                        tips: d.helperTmpl(q, h),
+                        tips: d.helperTmpl(r, h),
                         wrap: e.tmpl,
-                        template: r,
+                        template: s,
                         exp: f.experience || k
                     }),
                     h
@@ -14728,8 +14835,8 @@ ZeroClipboard.Client.prototype = {
                     c.reg("room_data_giftbat1", function (b) {
                         var c = f.decode(b).too();
                         if ("dgb" === c.type && c.uid == g.get("sys.uid"))
-                            for (var d in n) {
-                                var e = n[d];
+                            for (var d in o) {
+                                var e = o[d];
                                 if (e.style == c.gs) {
                                     a.dispatch(d, c);
                                     break
@@ -14748,8 +14855,8 @@ ZeroClipboard.Client.prototype = {
                         var c = f.decode(b).too()
                             , d = f.decode(c.sui).too();
                         if (d.id == g.get("sys.uid"))
-                            for (var e in n) {
-                                var h = n[e];
+                            for (var e in o) {
+                                var h = o[e];
                                 if (h.lev == c.lev) {
                                     a.dispatch(e, c);
                                     break
@@ -14789,12 +14896,20 @@ ZeroClipboard.Client.prototype = {
                 }
             },
             setData: function (a) {
-                o = a || {}
+                p = a || {}
             },
             getData: function () {
-                return o
+                return p
             },
             share: function (a) {
+                var b = WB2.oauthData;
+                if (b && b.expires_in > 0)
+                    ;
+                else
+                    try {
+                        WB2.logout()
+                    } catch (c) {
+                    }
                 WB2.anyWhere(function (b) {
                     b.widget.publish({
                         id: a.btnid,
@@ -14806,9 +14921,15 @@ ZeroClipboard.Client.prototype = {
                 })
             },
             getReward: function () {
-                var c = this;
+                var c = this
+                    , d = a.extend({
+                    uid: g.get("sys.uid"),
+                    nickname: g.get("sys.nickname")
+                }, n);
                 return c.dp("5.12.3.0"),
-                    c.getCookie("rewarded") ? !1 : void a.ajax({
+                    c.getCookie("rewarded") ? (d.exp = 0,
+                        b.trigger("mod.weibo.share", d),
+                        !1) : void a.ajax({
                         url: "/member/wb_share/nc_reward",
                         dataType: "json",
                         success: function (a) {
@@ -14817,14 +14938,17 @@ ZeroClipboard.Client.prototype = {
                                     exp: k
                                 }
                             }),
+                                d.exp = k,
+                                b.trigger("mod.weibo.share", d),
                                 c.setCookie("rewarded", !0, c.getRestTime((new Date).getTime()) / 1e3))
                         }
                     })
             }
         };
-        r.init();
-        var s = new Image;
-        s.src = $SYS.web_url + "app/douyu/res/page/room-normal/wbshare/title.png"
+        s.init();
+        var t = new Image;
+        t.src = $SYS.web_url + "app/douyu/res/page/room-normal/wbshare/title.png",
+            window.postMessage = null
     }),
     define("douyu/page/room/normal/mod/charge", ["jquery", "shark/class", "shark/observer", "douyu/context", "douyu/com/user", "douyu/page/room/base/api", "shark/util/cookie/1.0", "shark/ui/dialog/1.0/dialog", "shark/util/flash/data/1.0"], function (a, b, c, d, e, f, g, h, i) {
         function j(a, b) {
@@ -14995,6 +15119,312 @@ ZeroClipboard.Client.prototype = {
         };
         return u
     }),
+    define("douyu/page/room/normal/mod/bonus", ["jquery", "douyu/page/room/base/api", "shark/util/flash/data/1.0", "shark/observer", "shark/util/template/1.0", "douyu/com/user", "douyu/context", "shark/ext/swfobject", "shark/util/cookie/1.0", "douyu/page/room/normal/mod/chat-msg-tmp"], function (a, b, c, d, e, f, g, h, i, j) {
+        var k = a("#js-color-barrage")
+            , l = null
+            , m = a("#js-chat-cont")
+            , n = null
+            , o = "bonus-swf"
+            , p = 0
+            , q = 9
+            , r = 180
+            , s = null
+            , t = null
+            , u = !1
+            , v = "bonusId"
+            , w = "/member/cp"
+            , x = !1
+            , y = {
+            init: function (e) {
+                var f = this;
+                e && (x = e,
+                    m = a("#js-live-room-normal-right"),
+                    m.addClass("diy-bonus"),
+                    d.on("mod.chat.gift.layout", function () {
+                        a("#js-chat-notice").is(":visible") ? m.removeClass("diy-bonus-no-notice") : f.updateStatus(),
+                        n && n.css({
+                            bottom: a("#js-chat-speak").outerHeight() + a("#js-chat-notice").outerHeight()
+                        })
+                    })),
+                    d.on("mod.chat.bonus.call", function (a) {
+                        f.dispatch(a)
+                    }),
+                    b.reg("room_data_sabonus", function (a) {
+                        f.dispatch(a)
+                    }),
+                    b.reg("room_data_sabonusget", function (a) {
+                        var b, e = c.decode(a).too();
+                        return "ggbr" === e.type && f.updateBonus(e),
+                            "ggbb" === e.type && (b = j.peck(a),
+                            e.did != g.get("sys.uid") && d.fire("mod.chat.msg.shield").message) ? !1 : void (b && d.trigger("mod.chat.msg.msg", b))
+                    }),
+                    b.reg("room_data_login", function (a) {
+                        if (null != g.get("sys.uid") || null != g.get("sys.username")) {
+                            var b = c.decode(a).too();
+                            0 == b.ps && 0 == b.es ? w = "/member/cp" : 0 == b.es ? w = "/member/cp/changeEmail" : 0 == b.ps ? w = "/member/cp/cpBindPhone" : u = !0
+                        }
+                    })
+            },
+            updateStatus: function () {
+                m.addClass("diy-bonus-no-notice"),
+                n && n.find(".bonus-outer,#bonus-video").removeAttr("style")
+            },
+            render: function (b) {
+                var c = this
+                    , e = parseInt(b.stl, 10)
+                    , f = ""
+                    , g = null;
+                return f = i.get(v),
+                    b.rpid == f ? !1 : -r >= e ? !1 : (0 == k.next(".bonus-handle").size() && (l = a(c.getHandleTmpl()),
+                        k.after(l)),
+                    0 == m.find(".bonus-box").size() && (n = a(c.getBonusboxTmpl()),
+                        m.append(n),
+                        d.trigger("mod.chat.gift.layout")),
+                        t = n.find(".bonus-holder"),
+                        c.bindEvent(),
+                        setTimeout(function () {
+                            c.wait(b)
+                        }, p),
+                        void (g = setInterval(function () {
+                            e--,
+                            -r >= e && (clearInterval(g),
+                                c.destroy())
+                        }, 1e3)))
+            },
+            wait: function (b) {
+                var c = this
+                    , d = 1e3 * parseInt(b.stl, 10)
+                    , e = Math.random() * q * 1e3;
+                t.html(c.getWaitTmpl()),
+                    d - p >= 1e3 * -r ? a('[data-loading="bonus"]').stop().animate({
+                        width: "100%"
+                    }, {
+                        duration: e,
+                        queue: !0,
+                        complete: function () {
+                            c.count(b)
+                        }
+                    }) : c.destroy()
+            },
+            count: function (b) {
+                var c = this
+                    , d = null
+                    , e = parseInt(b.stl, 10);
+                l.removeClass("status-wait").addClass("status-count"),
+                    t.html(c.getCountTmpl()),
+                    d = a("[data-count='bonus']"),
+                s && clearInterval(s),
+                    e >= 0 ? (d.text(c.dateFormat(e, "mm:ss")),
+                        s = setInterval(function () {
+                            e--,
+                                0 >= e ? (clearInterval(s),
+                                    s = null ,
+                                    c.ready(b)) : d.text(c.dateFormat(e, "mm:ss"))
+                        }, 1e3)) : c.ready(b)
+            },
+            ready: function (a) {
+                var b = this
+                    , c = e.compile(b.getReadyTmpl());
+                t.off("click.bonusHolder"),
+                    n.removeClass("bonus-complete"),
+                    t.html(c(a)),
+                    l.removeClass("status-count").addClass("status-ready"),
+                    t.off("click.bonus").on("click.bonus", ".bonus-action", function () {
+                        b.checkUser() && b.getBonus(a)
+                    })
+            },
+            checkUser: function () {
+                var b = !0;
+                if (!f.check())
+                    return f.show("login"),
+                        b = !1;
+                if (!u) {
+                    var c = a(".bind-miss-panel");
+                    c.show(),
+                        c.find(".bind-miss-close").off("click.bonus").on("click.bonus", function () {
+                            c.hide()
+                        }).end().find(".txt-ar a").off("click.bonus").on("click.bonus", function () {
+                            window.open(w)
+                        }),
+                        b = !1
+                }
+                return b
+            },
+            getBonus: function (a) {
+                var d = t.find("[data-pid]")
+                    , e = c.encode([{
+                    name: "type",
+                    value: "ggbq"
+                }, {
+                    name: "rpid",
+                    value: d.data("pid")
+                }, {
+                    name: "rid",
+                    value: $ROOM.room_id
+                }, {
+                    name: "rpt",
+                    value: 3
+                }]);
+                b.exe("js_GetHongbao", e)
+            },
+            updateBonus: function (a) {
+                var b = this
+                    , c = null
+                    , f = parseInt(a.sl, 10);
+                return i.set(v, a.rpid, r),
+                    (c = f ? e.compile(b.getSuccessTmpl()) : e.compile(b.getFailureTmpl())) ? (n.addClass("bonus-complete"),
+                        t.html(c(a)),
+                        l.removeClass("status-ready").addClass("status-opened"),
+                        d.trigger("mod.userinfo.change", {
+                            change: {
+                                silver: f
+                            }
+                        }),
+                        n.on("click", ".bonus-close", function () {
+                            b.destroy()
+                        }),
+                        void DYS.submit({
+                            point_id: "5.14.1.0",
+                            ext: {
+                                yw: f ? f : 0
+                            }
+                        })) : !1
+            },
+            getHandleTmpl: function () {
+                return ['<div class="bonus-handle status-wait fl">', '<a href="javascript:;" class="status-bar status-wait"></a>', '<a href="javascript:;" class="status-bar status-count" data-count="bonus"></a>', '<a href="javascript:;" class="status-bar status-ready"><i></i></a>', '<a href="javascript:;" class="status-bar status-opened"></a>', "</div>"].join("")
+            },
+            getBonusboxTmpl: function () {
+                return ['<div class="bonus-effect">', '<div id="bonus-swf"></div>', '<div class="bonus-outer"><div class="bonus-box">', '<a class="bonus-close" href="javascript:;"></a>', '<div class="bonus-holder"></div>', '</div><div class="bonus-backend"></div><div class="bonus-front"></div>', "</div></div>"].join("")
+            },
+            getWaitTmpl: function () {
+                return ['<i class="icon-bonus-wait"></i>', '<div class="bonus-bar">', '<span data-loading="bonus" class="loading-bar-big">', "<strong></strong><b></b><em></em>", '<span class="lts"></span><span class="rts"></span>', "</span>", "</div>红包加载中..."].join("")
+            },
+            getCountTmpl: function () {
+                return ['<i class="icon-bonus-count"></i>', '<div class="count-panel">', "<h3>红包发放剩余时间</h3>", '<span data-count="bonus"></span>', "</div>"].join("")
+            },
+            getReadyTmpl: function () {
+                return ['<i class="icon-bonus-ready"></i>', "<div>", '<div class="bind-miss-panel">', '<a class="bind-miss-close" href="javascript:;"></a>', "<div><em>绑定手机和邮箱后</em>才可以领取红包哦</div>", '<div class="txt-ar"><a href="javascript:;">立即绑定</a></div>', "</div>", '<a href="javascript:;" data-pid="<%=rpid%>" class="bonus-action"></a>', "</div>"].join("")
+            },
+            getSuccessTmpl: function () {
+                return ['<h3 class="success-title">恭喜您领取到了</h3>', '<div class="bonus-tip">', '<span class="yw-count"><%=sl%></span>个鱼丸', "</div>", '<i class="icon-bonus-success"></i>', "<em>鱼丸已打入您的账户</em>"].join("")
+            },
+            getFailureTmpl: function () {
+                return ['<h3 class="failure-title">手慢了</h3>', "<span>红包已被领完</span>", '<i class="icon-bonus-failure"></i>'].join("")
+            },
+            dateFormat: function (a, b) {
+                var c = "";
+                if (!a || isNaN(a))
+                    return c;
+                var d = parseInt(a, 10)
+                    , e = parseInt(d % 60)
+                    , f = parseInt(d / 60 % 60)
+                    , g = parseInt(d / 3600 % 60)
+                    , h = parseInt(d / 216e3 % 24);
+                return h = h > 9 ? h : "0" + h,
+                    g = g > 9 ? g : "0" + g,
+                    f = f > 9 ? f : "0" + f,
+                    e = e > 9 ? e : "0" + e,
+                    b = b.replace("DD", h),
+                    b = b.replace("hh", g),
+                    b = b.replace("mm", f),
+                    b = b.replace("ss", e),
+                    c = b
+            },
+            bonusToggle: function () {
+                n.toggle(),
+                    l.toggle(),
+                    DYS.submit({
+                        point_id: "5.14.2.0",
+                        ext: {
+                            tg: n.is(":visible") ? 1 : 0
+                        }
+                    })
+            },
+            bindEvent: function () {
+                var b = this;
+                l.off("click.bonus").on("click.bonus", function () {
+                    b.bonusToggle()
+                }),
+                    n.off("click.bonus").on("click.bonus", ".bonus-close", function () {
+                        a(this);
+                        b.bonusToggle()
+                    }),
+                    t.off("click.bonusHolder").on("click.bonusHolder", function () {
+                        var b = a(this).find(".tip_notime");
+                        b.size() < 1 ? a(this).append("<div class='tip_notime'>还未到领取时间，请耐心等待哦</div>").find(".tip_notime").show(100).delay(2e3).hide(100) : "none" == b.css("display") && b.show(100).delay(2e3).hide(100)
+                    })
+            },
+            destroy: function () {
+                s && clearInterval(s),
+                l && l.off("click.bonus").remove(),
+                n && n.off("click.bonus").remove()
+            },
+            animate: function () {
+                var b = {}
+                    , c = {}
+                    , d = null
+                    , e = {};
+                c.quality = "high",
+                    c.bgcolor = "#000",
+                    c.allowscriptaccess = "always",
+                    c.allowfullscreen = "true",
+                    c.allowFullScreenInteractive = "true",
+                    c.wmode = "transparent",
+                    e.id = "bonus-video",
+                    e.name = "bonus-video",
+                    e.align = "middle",
+                    e.autoplay = !0,
+                    e.loop = !1,
+                    h.embedSWF(g.get("sys.res_url") + "douyu/images/bonus/bonus.swf", o, "325", "475", "11", "", b, c, e),
+                    d = a("#" + e.id),
+                    n.find(".bonus-outer").hide().delay(p).show(0, function () {
+                        d.remove()
+                    }),
+                    d.on("mousedown contextmenu", function (a) {
+                        return !1
+                    })
+            },
+            getBonusInfo: function (a) {
+                var b = null
+                    , d = [];
+                if (a.list && "" != a.list) {
+                    d = a.list.split("/|/");
+                    for (var e = 0, f = d.length; f > e; e++)
+                        if ("" != f[e]) {
+                            var g = c.decode(d[e]).too();
+                            if ("3" == g.rpt) {
+                                b = g;
+                                break
+                            }
+                        }
+                }
+                return b
+            },
+            dispatch: function (a) {
+                var b = c.decode(a).too()
+                    , d = null
+                    , e = this;
+                switch (b.type) {
+                    case "ccrp":
+                        p = 7e3,
+                            e.destroy(),
+                            e.render(b),
+                            e.animate();
+                        break;
+                    case "memberinfores":
+                        e.destroy(),
+                            p = 0,
+                            d = e.getBonusInfo(b),
+                        d && e.render(d)
+                }
+            }
+        };
+        return {
+            init: function (a) {
+                y.init(a)
+            }
+        }
+    }),
     define("douyu/page/room/normal/mod/super-recommended", ["jquery", "shark/observer", "shark/util/lang/1.0", "shark/util/cookie/1.0", "shark/util/template/2.0", "douyu/context", "douyu/com/imgp"], function (a, b, c, d, e, f, g) {
         function h() {
             var a = new Date
@@ -15087,7 +15517,7 @@ ZeroClipboard.Client.prototype = {
             ,
             j.mainObj = {
                 getTemplate: function () {
-                    return '{{each items as value i}}<div class="list-item" title="{{value.title}}"><a  target="_blank" href="/{{value.roomid}}" data-cateid="{{value.cateid}}" data-roomid="{{value.roomid}}"><div class="room-img"><b></b><img data-original="{{value.roompic}}" src="http://www.dev.dz11.com/upload/web_pic/default2_thumb.gif" title="{{value.title}}"><div class="room-img-bg"></div></div><div class="room-info" ><div class="room-zhubo-img"><img data-original="{{value.avatar}}" src="' + $SYS.web_url + 'app/douyu/res/page/room-normal/super-rmd/rgrmd-default.jpg"/></div><div class="room-type-name">{{value.catename}}</div><div class="room-title">{{value.title}}</div></div></a></div>{{/each}}'
+                    return '{{each items as value i}}<div class="list-item" title="{{value.title}}"><a  target="_blank" href="/{{value.roomid}}" data-cateid="{{value.cateid}}" data-roomid="{{value.roomid}}"><div class="room-img"><b></b><img data-original="{{value.roompic}}" src="' + $SYS.web_url + 'app/douyu/res/page/list-item-def-thumb.gif" title="{{value.title}}"><div class="room-img-bg"></div></div><div class="room-info" ><div class="room-zhubo-img"><img data-original="{{value.avatar}}" src="' + $SYS.web_url + 'app/douyu/res/page/room-normal/super-rmd/rgrmd-default.jpg"/></div><div class="room-type-name">{{value.catename}}</div><div class="room-title">{{value.title}}</div></div></a></div>{{/each}}'
                 },
                 renderData: function () {
                     var a = i.listdata.splice(0, 4)
@@ -15268,7 +15698,7 @@ ZeroClipboard.Client.prototype = {
             ,
             l.mainObj = {
                 getTemplate: function () {
-                    return '{{each items as value i}}<li title="{{value.title}}"><a target="_blank" href="/{{value.roomid}}" data-cateid="{{value.cateid}}" data-roomid="{{value.roomid}}"><div class="rmd-room"><div class="rmd-room-img"><b></b><img  data-original="{{value.roompic}}" src="http://www.dev.dz11.com/upload/web_pic/default2_thumb.gif" title="{{value.title}}"></div><div class="rmd-room-title" >{{value.title}}</div></div></a></li>{{/each}}'
+                    return '{{each items as value i}}<li title="{{value.title}}"><a target="_blank" href="/{{value.roomid}}" data-cateid="{{value.cateid}}" data-roomid="{{value.roomid}}"><div class="rmd-room"><div class="rmd-room-img"><b></b><img  data-original="{{value.roompic}}" src="' + $SYS.web_url + 'app/douyu/res/page/list-item-def-thumb.gif" title="{{value.title}}"></div><div class="rmd-room-title" >{{value.title}}</div></div></a></li>{{/each}}'
                 },
                 renderData: function () {
                     var a = i.ywlistdata.slice(0, 2)
@@ -15582,8 +16012,8 @@ ZeroClipboard.Client.prototype = {
             }
         }
     }),
-    define("douyu/page/room/normal/app", ["jquery", "shark/observer", "douyu/com/imgp", "douyu/com/header", "douyu/com/user", "douyu/com/avatar", "douyu/com/zoom", "douyu/page/room/base/api", "douyu/page/room/normal/mod/sign", "douyu/page/room/normal/mod/center", "douyu/page/room/normal/mod/layout", "douyu/page/room/normal/mod/title", "douyu/page/room/normal/mod/userinfo", "douyu/page/room/normal/mod/gift", "douyu/page/room/normal/mod/chat", "douyu/page/room/normal/mod/task", "douyu/page/room/normal/mod/olyw", "douyu/page/room/normal/mod/broadcast", "douyu/page/room/normal/mod/share", "douyu/page/room/normal/mod/qr-code", "douyu/page/room/normal/mod/menu", "douyu/page/room/normal/mod/chouqin", "douyu/page/room/normal/mod/guide", "douyu/page/room/normal/mod/recommended", "douyu/page/room/normal/mod/anchor-like", "douyu/page/room/normal/mod/charge", "douyu/page/room/normal/mod/weibo", "douyu/page/room/normal/mod/video", "douyu-activity/mayday/pc/mayday", "douyu/page/room/normal/mod/super-recommended"], function (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D) {
-        var E = function () {
+    define("douyu/page/room/normal/app", ["jquery", "shark/observer", "douyu/com/imgp", "douyu/com/header", "douyu/com/user", "douyu/com/avatar", "douyu/com/zoom", "douyu/page/room/base/api", "douyu/page/room/normal/mod/sign", "douyu/page/room/normal/mod/center", "douyu/page/room/normal/mod/layout", "douyu/page/room/normal/mod/title", "douyu/page/room/normal/mod/userinfo", "douyu/page/room/normal/mod/gift", "douyu/page/room/normal/mod/chat", "douyu/page/room/normal/mod/task", "douyu/page/room/normal/mod/olyw", "douyu/page/room/normal/mod/broadcast", "douyu/page/room/normal/mod/share", "douyu/page/room/normal/mod/qr-code", "douyu/page/room/normal/mod/menu", "douyu/page/room/normal/mod/chouqin", "douyu/page/room/normal/mod/guide", "douyu/page/room/normal/mod/recommended", "douyu/page/room/normal/mod/anchor-like", "douyu/page/room/normal/mod/charge", "douyu/page/room/normal/mod/weibo", "douyu/page/room/normal/mod/bonus", "douyu/page/room/normal/mod/video", "douyu-activity/mayday/pc/mayday", "douyu/page/room/normal/mod/super-recommended"], function (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E) {
+        var F = function () {
                 var b = d.init({
                     onLogin: function () {
                         e.show("login")
@@ -15617,11 +16047,12 @@ ZeroClipboard.Client.prototype = {
                     v.init(),
                     w.init(),
                     x.init(),
-                    B.init(),
+                    C.init(),
                     z.init(),
-                    D.init(),
-                    C.init()
+                    B.init(),
+                    E.init(),
+                    D.init()
             }
             ;
-        a(E)
+        a(F)
     });

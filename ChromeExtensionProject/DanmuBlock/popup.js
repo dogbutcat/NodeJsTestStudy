@@ -20,10 +20,11 @@ function init() {
  * Save Block Words
  */
 function saveOptions() {
-    var words = document.getElementById('words');
+    var words = document.getElementById('words'),level=document.getElementById('usrLevel');
     renderContent('Now Saving...');
     danMuBlocker.storage.set({
-        words: words.value
+        words: words.value,
+        level: level.value
     }, function () {
         renderContent('Saving Complete!');
     })
@@ -32,9 +33,11 @@ function saveOptions() {
 function restoreOptions() {
     init();
     danMuBlocker.storage.get({
-        words:'66666'
+        words:'66666', // Default Value
+        level:'5'
     },function (items) {
         document.getElementById('words').value=items.words;
+        document.getElementById('usrLevel').value = items.level;
     })
 }
 
