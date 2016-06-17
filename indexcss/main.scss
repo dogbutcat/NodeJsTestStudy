@@ -1,0 +1,140 @@
+
+@font-face {
+  font-family: "Helvetica Condensed Regular";
+  src: url('c6206d3d-1ef8-44ad-96fa-c25e22252eb0.woff') format('woff');
+}
+@font-face {
+  font-family: "Helvetica Neue Medium";
+  src: url('11398868-5e58-467f-86d1-650e10dd998a.woff') format('woff');
+}
+
+.header {
+  padding-top: 0;
+  position: relative;
+  background-color: #ffcc00;
+  z-index:10;
+}
+
+.logo {
+  color: #333;
+  float: left;
+  font-size: 1.8em;
+  line-height: 1.5em;
+  margin: 0;
+  padding: .5555em .8333em .6111em;
+  position: relative;
+  text-decoration: none;
+  z-index:1;
+  font-family:"Helvetica Condensed Regular","Helvetica Neue", Arial, sans-serif;
+}
+
+.header-top {
+  border-bottom: 1px solid #eab500;
+
+  .floater{
+    position: static;
+    right: 0;
+    left: 0;
+    top: 0;
+    z-index:1;
+  }
+}
+.nav-header-aux {
+  float: right;
+  display: block;
+  width: 16.66%;
+  ul {
+    list-style: none;
+    font-size: 1em;
+  }
+  a{
+    text-decoration: none;
+  }
+}
+.fluid {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 120em;
+}
+
+.padder {
+  .header-quick-search {
+    .quick-search {
+      //padding: 0 4em 0 2em;
+      zoom: 1;
+      position: relative;
+      margin-top: 0;
+      margin-left: 0;
+    }
+    .action {
+      background: transparent url('http://wellington.govt.nz/wcc/images/quick-search.png') no-repeat center;
+      border: none;
+      color: #FFFFFF;
+      display: block;
+      height: 0;
+      margin-top: -2.1428em;
+      overflow: hidden;
+      padding-top: 4.2857em;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      width: 4.2857em;
+      -webkit-transition: all 0.2s ease-in;
+      -moz-transition: all 0.2s ease-in;
+      transition: all 0.2s ease-in;
+    }
+    .text {
+      border: none;
+      background: transparent;
+      font-family: "Helvetica Condensed Regular", "Helvetica Neue", Arial, sans-serif;
+      font-size: 2em;
+      line-height: 1em;
+      margin: 0 0 0 -1em;
+      width: 100%;
+      padding: 0.94em 2em 0.92em 1em;
+      -webkit-transition: all 0.2s ease-in;
+      -moz-transition: all 0.2s ease-in;
+      transition: all 0.2s ease-in;
+      &:focus{
+        background: #ffd53e;
+        outline: none;
+        border-color: #c29410;
+      }
+    }
+    width: 16.6%;
+    top: 11.1em;
+    float: none;
+    position: absolute;
+  }
+  padding:0 1.5em;
+}
+input{
+  font-size: 1.4em;
+}
+
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, menu, nav, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+  font-size: 100%;
+}
+
+html {
+  font-size: 50%;
+}
+
+@media screen and (min-width: 56em){
+  padding-left: 7.1428%;
+  padding-right: 7.1428%;
+}
+
+@media screen and (min-width: 46.875em) {
+  .logo{
+    font-size: 3.5em;
+    line-height:1.3714em;
+  }
+}
+
+

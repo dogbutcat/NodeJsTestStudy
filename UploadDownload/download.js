@@ -31,7 +31,7 @@ function download(url,savefile,callback){
 var urlparse = require('url').parse,
     http = require('http'),
     fs = require('fs');
-function download(url,savefile,callback){
+/*function download(url,savefile,callback){
     var urlinfo = urlparse(url);
     var options = {
         host:urlinfo.host,
@@ -54,6 +54,23 @@ function download(url,savefile,callback){
             console.log('err',err.message);
         });
         res.pipe(writestream);
+    });
+    req.end();
+}*/
+
+function download(url, savefile, callback) {
+    var urlInfo = urlparse(url),options={host:urlInfo.host,method:'get',path:urlInfo.pathname};
+    urlInfo.port?options.port=urlInfo.port:'';
+    urlInfo.search?options.pathname+=urlInfo.search:'';
+    var req = http.request(options,function (res) {
+        var ws = fs.createWriteStream(savefile);
+        ws.on('close',function () {
+            callback.call(null, null, res);
+        });
+        ws.on('error',function (err) {
+            callback.call(null,err, res);
+        })
+        res.pipe(ws);
     });
     req.end();
 }
