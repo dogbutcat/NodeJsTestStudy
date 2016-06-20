@@ -1,0 +1,23 @@
+{
+  "name": "nodeandreact",
+  "description": "",
+  "main": "SyncAndAsync.js",
+  "authors": [
+    "dogbutcat <dogbutcat@hotmail.com>"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "86214869"
+  ],
+  "homepage": "https://github.com/dogbutcat/NodeJsTestStudy",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6"
+  }
+}
