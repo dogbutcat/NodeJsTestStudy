@@ -1,0 +1,144 @@
+$radius:327px;
+
+@mixin boder-radius($deg){
+  -webkit-border-radius: $deg;
+  -moz-border-radius: $deg;
+  border-radius: $deg;
+}
+
+body{
+  background-color: #f6f6c4;
+  overflow: hidden;
+}
+h1{
+  margin: 0;
+  padding: 1em 0 0;
+  color: #f6f6c4;
+}
+h2 {
+  color: black;
+  font-weight: 300;
+  font-size: 28px;
+}
+article {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 306px;
+  margin-bottom: 150px;
+  background-color: #d73737;
+  text-align: center;
+}
+
+.spinner-wrap {
+  //display: block;
+  position: relative;
+  left: 50%;
+  top: 19px;
+  width: $radius;
+  height: $radius;
+  margin-left: -163px;
+  * {
+    cursor: pointer;
+  }
+  &.pulsing{
+    //noinspection CssInvalidPropertyValue
+    -webkit-animation:.8s linear 0s 1 pulse;
+    //noinspection CssInvalidPropertyValue
+    -o-animation:.8s linear 0s 1 pulse;
+    //noinspection CssInvalidPropertyValue
+    animation:.8s linear 0s 1 pulse;
+  }
+}
+.spinner-outer{
+  display: block;
+  position: absolute;
+  left: 50%;
+  width: $radius;
+  height: $radius;
+  margin-left: -163px;
+  @include boder-radius(50%);
+  background: url("../img/spinner-outer.png") center center no-repeat #32302e;
+  .playing &{
+    // alternate add after infinite is to make the keyframe reround
+    //noinspection CssInvalidPropertyValue
+    animation:5s linear 0s infinite spin-cw;
+  }
+}
+.spinner-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 200px;
+  width: 200px;
+  margin: -99px;
+  @include boder-radius(50%);
+  background: url("../img/spinner-center.png") center center no-repeat;
+  pointer-events: none;
+  .playing &{
+    //noinspection CssInvalidPropertyValue
+    animation:5s linear 0s infinite spin-ccw;
+  }
+}
+.play-sprite{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 70px;
+  height: 70px;
+  margin: -35px 0 0 -35px;
+  background: url("../img/play-sprite.png");
+
+  .playing &{
+    background-position: 0 -70px;
+  }
+}
+
+@keyframes spin-cw {
+  from {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to{
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin-ccw {
+  from {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+  to{
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+}
+@keyframes pulse {
+  from{
+    -webkit-transform: scale(1.3);
+    -moz-transform: scale(1.3);
+    -ms-transform: scale(1.3);
+    -o-transform: scale(1.3);
+    transform: scale(1.3);
+  }
+  to{
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1);
+  }
+}
