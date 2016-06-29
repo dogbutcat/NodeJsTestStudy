@@ -5,20 +5,24 @@
     <title>Title</title>
     <script type="text/javascript" src="h5_audio_origin_test.js"></script>
     <style>
-        #mp3_player{
+        #mp3_player {
             width: 500px;
             height: 60px;
             margin: 50px auto;
             padding: 5px;
             background-color: #000000;
         }
-        #mp3_player audio{
+
+        #mp3_player audio {
             float: left;
             width: 100%;
         }
-        #mp3_player #analyser{
+
+        #mp3_player #analyser1, #analyser2 {
             float: left;
-            width: 100%;
+            margin: 0;
+            padding: 0;
+            width: 50%;
             height: 50%;
             background-color: #002d3c;
         }
@@ -27,7 +31,8 @@
 <body>
 <div id="mp3_player">
     <div id="audio_box"></div>
-    <canvas id="analyser"></canvas>
+    <canvas id="analyser1"></canvas>
+    <canvas id="analyser2"></canvas>
 </div>
 </body>
 </html>

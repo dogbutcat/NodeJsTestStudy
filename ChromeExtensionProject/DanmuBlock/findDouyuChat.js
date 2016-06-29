@@ -9,6 +9,8 @@ var observer_clist = new MutationObserver(function (mutations) {
     // characterData:true
 }, target, targetList = ['.c-list', '#chat_line_list'], blockConfig={};
 
+target = setObserverTarget(targetList, window.document);
+
 /**
  * Get storage Initalize
  */
@@ -16,6 +18,8 @@ var observer_clist = new MutationObserver(function (mutations) {
     chrome.runtime.sendMessage({type: 'getData'}, function (response) {
         // console.log(response);
         blockConfig = JSON.parse(response);
+
+        observer_clist.observe(target, config);
         // console.log(blockConfig);
     })
 }();
@@ -40,8 +44,6 @@ function setObserverTarget(tList, htmlNode) {
     return target;
 }
 
-target = setObserverTarget(targetList, window.document);
-observer_clist.observe(target, config);
 
 /**
  * FormatedNode Module
@@ -80,8 +82,9 @@ formatedNode.prototype = {
         return this.tempNode && this.tempNode.querySelector('img.cj-img') != null ? true : false
     },
     userLevel: function (lvl) {
-        var userNode = (this.tempNode && this.tempNode.querySelector('a.user-level').querySelector('img').getAttribute('title')), result;
-        (result = userNode.match(/\d+/g))&& (result = parseInt(result[0]));
+        // var userNode = (this.tempNode && this.tempNode.querySelector('a.user-level').querySelector('img').getAttribute('title')), result;
+        var $userNode = $(this.tempNode), result;
+        result = $userNode.data('level');
         return result < parseInt(lvl);
     }
 };
@@ -130,8 +133,8 @@ function checkWords(text) {
         matchReg = text.match(/(.{2,})\1{1,}|(.)\2{3,}/ig); // single word Repeat for trible time or two word repeat one times to Block the chat
         if (text.length > 12 || matchReg != null) {
             return true;
-        } else if (blockConfig.blockWords != "") {
-            var regpiece = new RegExp(blockConfig.blockWords, 'ig');
+        } else if (blockConfig.words != "") {
+            var regpiece = new RegExp(blockConfig.words, 'ig');
             matchReg = text.match(regpiece);
             if (matchReg != null) {
                 return true;
@@ -150,7 +153,7 @@ chrome.storage.onChanged.addListener(function (a, b) { // a is submitted the cha
     for (var key in a) {
         switch (key) {
             case "words":
-                blockWords = a.words.newValue;
+                words = a.words.newValue;
                 break;
             case "level":
                 blockConfig.level = a.level.newValue;

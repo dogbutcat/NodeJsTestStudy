@@ -25,9 +25,22 @@ article {
   z-index: 1;
   width: 100%;
   height: 306px;
-  margin-bottom: 150px;
+  margin-bottom: 170px;
   background-color: #d73737;
   text-align: center;
+}
+#analyser{
+  padding: 0 10%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#analyser1, #analyser2{
+  position: relative;
+  float: left;
+  width: 50%;
+  height: 100%;
+  //background-color: #ffd53e;
 }
 
 .spinner-wrap {
@@ -37,7 +50,7 @@ article {
   top: 19px;
   width: $radius;
   height: $radius;
-  margin-left: -163px;
+  margin-left: -164px;
   * {
     cursor: pointer;
   }
@@ -62,7 +75,7 @@ article {
   .playing &{
     // alternate add after infinite is to make the keyframe reround
     //noinspection CssInvalidPropertyValue
-    animation:5s linear 0s infinite spin-cw;
+    animation:spin-cw 5s linear 0s infinite ;
   }
 }
 .spinner-center {

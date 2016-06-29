@@ -1,7 +1,7 @@
 {
   "manifest_version":2,
   "name":"DanmuBlocker",
-  "version":"1.2.6",
+  "version":"2.0.0",
 
   "browser_action":{
     "default_icon":{
@@ -14,11 +14,11 @@
   "permissions":["tabs","storage","http://www.douyu.com/*","http://www.douyutv.com/*","contextMenus"],
 
   "background":{
-    "scripts":["ext/common.js","background.js","messageType.js"]
+    "scripts":["ext/common.js","background.js"]
   },
 
   "content_scripts":[{
     "matches":["http://www.douyu.com/*","http://www.douyutv.com/*"],
-    "js":["findDouyuChat.js"]
+    "js":["findDouyuChat.js","ext/jquery.js"]
   }]
 }
