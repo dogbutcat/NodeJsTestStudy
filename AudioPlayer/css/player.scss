@@ -13,12 +13,13 @@ body{
 h1{
   margin: 0;
   padding: 1em 0 0;
+  font-family:'Open Sans',sans-serif;
   color: #f6f6c4;
 }
 h2 {
   color: black;
   font-weight: 300;
-  font-size: 28px;
+  font-size: 20px;
 }
 article {
   position: relative;
@@ -104,6 +105,52 @@ article {
 
   .playing &{
     background-position: 0 -70px;
+  }
+}
+
+#banner{
+  position: absolute;
+  left: 0;
+  top: 730px;
+  width: 100%;
+  height: 80px;
+  padding-bottom: 30px;
+  // background-color: #0fc;
+  background: linear-gradient(to top,transparent 30%,#FFFFFF 60%,transparent);
+  text:{
+    align:center;
+  }
+  font:{
+    family: 'Open Sans',sans-serif;
+    size: 25px;
+  }
+  a.pens {
+    text-decoration: none;
+    color: #1d7500;
+    font-family: Lobster,sans-serif;
+    &:hover{
+      text-decoration: underline;
+    }
+  }
+  i{
+    font-size: 30px;
+    color: #000000;
+    &:hover{
+      margin: auto 5px;
+      transform: scale(1.4);
+    }
+  }
+  .freeCodeCamp{
+    display: inline-block;
+    position: relative;
+    top: 10px;
+    width: 60px;
+    height: 45px;
+    transform: scale(.7);
+    background: url("../img/freecodecamp.png") no-repeat;
+    &:hover{
+      transform: scale(1);
+    }
   }
 }
 
