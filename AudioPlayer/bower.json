@@ -17,5 +17,8 @@
   ],
   "devDependencies": {
     "jquery": "^3.0.0"
+  },
+  "dependencies": {
+    "font-awesome": "fontawesome#^4.6.3"
   }
 }
